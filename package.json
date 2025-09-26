@@ -1,0 +1,12 @@
+{
+  "name": "telegram-tap-bot",
+  "version": "1.0.0",
+  "description": "Telegram WebApp Tap Bot like Notcoin",
+  "scripts": {
+    "deploy:worker": "wrangler deploy",
+    "dev:worker": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
