@@ -1,13 +1,24 @@
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>Telegram Tap Bot</title>
-    <meta charset="utf-8">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta http-equiv="refresh" content="0; url=webapp/onboarding.html">
 </head>
 <body>
-    <h1>Telegram Tap Bot Setup Successful! 🎉</h1>
-    <p>GitHub Pages is now working.</p>
-    <p>Next: Setting up the actual bot interface...</p>
+    <p>Redirecting to Tap Bot...</p>
+    <script>
+        // Telegram WebApp detection
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            window.location.href = 'webapp/onboarding.html';
+        } else {
+            // Fallback for non-Telegram browsers
+            setTimeout(() => {
+                window.location.href = 'webapp/onboarding.html';
+            }, 1000);
+        }
+    </script>
 </body>
 </html>
