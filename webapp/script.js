@@ -1,20 +1,31 @@
-// GitHub Pages এর জন্য configuration
+// script.js - Updated with onboarding check
 const tg = window.Telegram.WebApp;
+const API_BASE = 'https://your-worker.workers.dev';
 
-// Cloudflare Worker URL - আপনার actual worker URL দিবেন
-const API_BASE = 'https://your-bot-api.your-account.workers.dev';
-
-// বাকি code একই থাকবে...
-const userId = tg.initDataUnsafe.user.id || 'test-user';
-
-async function loadBalance() {
-    try {
-        const response = await fetch(`${API_BASE}/api/balance/${userId}`);
-        const data = await response.json();
-        document.getElementById('balance').textContent = data.balance;
-    } catch (error) {
-        console.error('Error loading balance:', error);
+class TapBot {
+    constructor() {
+        this.userId = tg.initDataUnsafe.user.id;
+        this.isNewUser = true; // Check from API later
+        
+        this.init();
     }
+
+    async init() {
+        tg.expand();
+        tg.enableClosingConfirmation();
+
+        // Check if user needs onboarding
+        if (this.isNewUser) {
+            window.location.href = 'onboarding.html';
+            return;
+        }
+
+        await this.loadBalance();
+        this.setupEventListeners();
+    }
+
+    // ... rest of your existing tap bot code
 }
 
-// বাকি functions same...
+// Start the app
+new TapBot();
