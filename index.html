@@ -44,6 +44,465 @@
             padding: 20px 0;
             border-bottom: 1px solid var(--border);
             margin-bottom: 30px;
+            position: relative;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .profile-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+        }
+
+        .profile-info {
+            text-align: left;
+        }
+
+        .user-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .user-id {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .default-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            border: 3px solid var(--primary);
+        }
+
+        .logo {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .agreement-content {
+            flex: 1;
+            background: var(--surface);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .effective-date {
+            text-align: center;
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .agreement-text {
+            max-height: 50vh;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .agreement-text::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .agreement-text::-webkit-scrollbar-track {
+            background: var(--background);
+        }
+
+        .agreement-text::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin: 20px 0 10px 0;
+            font-size: 1.2rem;
+        }
+
+        h2:first-child {
+            margin-top: 0;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .highlight {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid #EF4444;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning-text {
+            color: #FCA5A5;
+            font-weight: 500;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .agree-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            max-width: 300px;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .agree-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .agree-btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .support-link {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-decoration: none;
+            border-bottom: 1px dashed var(--text-secondary);
+            padding-bottom: 1px;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox.checked {
+            background: var(--primary);
+        }
+
+        .checkbox.checked::after {
+            content: "✓";
+            color: white;
+            font-weight: bold;
+        }
+
+        .checkbox-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        @media (max-height: 700px) {
+            .agreement-text {
+                max-height: 40vh;
+            }
+            
+            .profile-photo, .default-avatar {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .user-name {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="agreement-container">
+        <div class="header">
+            <div class="user-profile" id="userProfile">
+                <div class="default-avatar">👤</div>
+                <div class="profile-info">
+                    <div class="user-name">Loading...</div>
+                    <div class="user-id">User ID: ...</div>
+                </div>
+            </div>
+            
+            <div class="logo">🪙</div>
+            <h1>TapCoin Client Agreement</h1>
+        </div>
+
+        <div class="agreement-content">
+            <div class="effective-date">
+                Effective Date: <strong>26.09.2024</strong>
+            </div>
+
+            <div class="agreement-text">
+                <h2>1. General Information</h2>
+                <p>This Client Agreement governs your use of the TapCoin Telegram-based application operated by the TapCoin development team. By accessing or using TapCoin, you fully and unconditionally accept the terms outlined below.</p>
+
+                <h2>1.1. TapCoin Service</h2>
+                <p>TapCoin is a game-based application within Telegram that allows users to earn in-game rewards, participate in events, trade assets, compete in leaderboards, and receive tokens based on activity.</p>
+
+                <h2>2. User Responsibilities</h2>
+                <p>You are responsible for maintaining the confidentiality of your account and any activities that occur under your account.</p>
+
+                <div class="highlight">
+                    <p class="warning-text">You must agree with client agreement. If you don't agree please contact <strong>SUPPORT</strong> to continue using app.</p>
+                </div>
+            </div>
+
+            <div class="checkbox-container">
+                <div class="checkbox" id="agreeCheckbox"></div>
+                <span class="checkbox-label">I have read and agree to the terms and conditions</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <button class="agree-btn" id="agreeButton" disabled>Agree & Continue</button>
+            <br>
+            <a href="https://t.me/tapcoin_support" class="support-link" target="_blank">Contact Support</a>
+        </div>
+    </div>
+
+    <script>
+        class AgreementManager {
+            constructor() {
+                this.agreeCheckbox = document.getElementById('agreeCheckbox');
+                this.agreeButton = document.getElementById('agreeButton');
+                this.userProfile = document.getElementById('userProfile');
+                this.isAgreed = false;
+                this.tg = null;
+                
+                this.init();
+            }
+
+            init() {
+                this.setupTelegram();
+                this.loadUserProfile();
+                this.setupEventListeners();
+                this.checkExistingAgreement();
+            }
+
+            setupTelegram() {
+                this.tg = window.Telegram?.WebApp;
+                if (this.tg) {
+                    this.tg.expand();
+                    this.tg.enableClosingConfirmation();
+                    this.tg.BackButton.hide();
+                }
+            }
+
+            loadUserProfile() {
+                if (!this.tg) {
+                    this.showDefaultProfile();
+                    return;
+                }
+
+                const user = this.tg.initDataUnsafe?.user;
+                if (user) {
+                    this.displayUserProfile(user);
+                } else {
+                    this.showDefaultProfile();
+                }
+            }
+
+            displayUserProfile(user) {
+                const profileHtml = `
+                    ${user.photo_url ? 
+                        `<img src="${user.photo_url}" class="profile-photo" alt="Profile" onerror="this.style.display='none'; document.querySelector('.default-avatar').style.display='flex';" />` : 
+                        ''
+                    }
+                    <div class="default-avatar" style="${user.photo_url ? 'display: none;' : ''}">
+                        ${user.first_name ? user.first_name.charAt(0).toUpperCase() : '👤'}
+                    </div>
+                    <div class="profile-info">
+                        <div class="user-name">
+                            ${this.formatUserName(user)}
+                        </div>
+                        <div class="user-id">ID: ${user.id}</div>
+                    </div>
+                `;
+                
+                this.userProfile.innerHTML = profileHtml;
+            }
+
+            formatUserName(user) {
+                if (user.first_name && user.last_name) {
+                    return `${user.first_name} ${user.last_name}`;
+                } else if (user.first_name) {
+                    return user.first_name;
+                } else if (user.username) {
+                    return `@${user.username}`;
+                } else {
+                    return 'Telegram User';
+                }
+            }
+
+            showDefaultProfile() {
+                const profileHtml = `
+                    <div class="default-avatar">👤</div>
+                    <div class="profile-info">
+                        <div class="user-name">Telegram User</div>
+                        <div class="user-id">ID: Not available</div>
+                    </div>
+                `;
+                this.userProfile.innerHTML = profileHtml;
+            }
+
+            setupEventListeners() {
+                this.agreeCheckbox.addEventListener('click', () => {
+                    this.toggleAgreement();
+                });
+
+                this.agreeButton.addEventListener('click', () => {
+                    this.handleAgreement();
+                });
+
+                document.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && this.isAgreed) {
+                        this.handleAgreement();
+                    }
+                });
+            }
+
+            toggleAgreement() {
+                this.isAgreed = !this.isAgreed;
+                this.agreeCheckbox.classList.toggle('checked', this.isAgreed);
+                this.agreeButton.disabled = !this.isAgreed;
+                this.hapticFeedback('light');
+            }
+
+            async handleAgreement() {
+                if (!this.isAgreed) return;
+
+                this.agreeButton.innerHTML = 'Processing...';
+                this.agreeButton.disabled = true;
+                document.body.classList.add('loading');
+
+                // Save user agreement data
+                const userData = this.tg?.initDataUnsafe?.user || {};
+                const agreementData = {
+                    agreed: true,
+                    date: new Date().toISOString(),
+                    userId: userData.id,
+                    userName: this.formatUserName(userData)
+                };
+
+                localStorage.setItem('tapcoin_agreement', JSON.stringify(agreementData));
+
+                // Simulate processing
+                await this.delay(800);
+                this.hapticFeedback('medium');
+
+                // Redirect to onboarding
+                window.location.href = 'onboarding.html';
+            }
+
+            checkExistingAgreement() {
+                try {
+                    const agreementData = localStorage.getItem('tapcoin_agreement');
+                    if (agreementData) {
+                        const agreement = JSON.parse(agreementData);
+                        if (agreement.agreed) {
+                            window.location.href = 'onboarding.html';
+                        }
+                    }
+                } catch (error) {
+                    console.log('No existing agreement found');
+                }
+            }
+
+            hapticFeedback(type = 'light') {
+                if (this.tg?.HapticFeedback) {
+                    this.tg.HapticFeedback.impactOccurred(type);
+                }
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new AgreementManager();
+        });
+
+        // Handle back navigation
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                try {
+                    const agreementData = localStorage.getItem('tapcoin_agreement');
+                    if (agreementData) {
+                        const agreement = JSON.parse(agreementData);
+                        if (agreement.agreed) {
+                            window.location.href = 'onboarding.html';
+                        }
+                    }
+                } catch (error) {
+                    // Continue showing agreement page
+                }
+            }
+        });
+    </script>
+</body>
+    </html>            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
         }
 
         .logo {
