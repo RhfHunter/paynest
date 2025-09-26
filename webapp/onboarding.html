@@ -2,39 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to TapCoin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>TapCoin</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="onboarding-container">
-        <!-- Progress Bar -->
+    <div class="onboarding-screen">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">🪙</div>
+            <h1>TapCoin</h1>
+        </div>
+
+        <!-- Progress Indicator -->
         <div class="progress-container">
+            <div class="progress-steps">
+                <div class="step-dot active"></div>
+                <div class="step-dot"></div>
+                <div class="step-dot"></div>
+                <div class="step-dot"></div>
+            </div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
-            <div class="progress-text" id="progressText">0%</div>
         </div>
 
         <!-- Content Area -->
-        <div class="onboarding-content">
-            <div class="step active" id="step1">
-                <div class="icon">🚀</div>
-                <h2>Setting Up Your Account</h2>
-                <p>Preparing your TapCoin wallet...</p>
+        <div class="content">
+            <div class="step-content active" id="step1">
+                <div class="illustration">🚀</div>
+                <h2>Creating Your Wallet</h2>
+                <p>Setting up your secure TapCoin account</p>
             </div>
 
-            <div class="step" id="step2">
-                <div class="icon">👥</div>
-                <h2>Referral Bonus Applied</h2>
-                <p>+50 coins for joining through referral!</p>
+            <div class="step-content" id="step2">
+                <div class="illustration">👥</div>
+                <h2>Referral Applied</h2>
+                <p>+50 coins for joining with friends</p>
+                <div class="bonus-badge">+50 🪙</div>
             </div>
 
-            <div class="step" id="step3">
-                <div class="icon">🎁</div>
-                <h2>Opening Bonus Added</h2>
-                <p>+100 welcome coins credited!</p>
+            <div class="step-content" id="step3">
+                <div class="illustration">🎁</div>
+                <h2>Welcome Bonus</h2>
+                <p>+100 coins for starting your journey</p>
+                <div class="bonus-badge">+100 🪙</div>
+            </div>
+
+            <div class="step-content" id="step4">
+                <div class="illustration">⭐</div>
+                <h2>Ready to Earn!</h2>
+                <p>Start tapping and grow your wealth</p>
+                <button class="start-btn" onclick="completeOnboarding()">Start Tapping</button>
+            </div>
+        </div>
+
+        <!-- Animated Background Elements -->
+        <div class="bg-elements">
+            <div class="floating-circle"></div>
+            <div class="floating-circle"></div>
+            <div class="floating-circle"></div>
+        </div>
+    </div>
+
+    <script src="onboarding.js"></script>
+</body>
+</html>                <p>+100 welcome coins credited!</p>
             </div>
 
             <div class="step" id="step4">
