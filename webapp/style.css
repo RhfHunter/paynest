@@ -1,1 +1,163 @@
+/* Onboarding Specific Styles */
+.onboarding-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: white;
+}
 
+.progress-container {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #FFD700, #FFA500);
+    border-radius: 10px;
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+.progress-text {
+    font-size: 14px;
+    font-weight: bold;
+    color: #FFD700;
+}
+
+.onboarding-content {
+    width: 100%;
+    max-width: 400px;
+}
+
+.step {
+    display: none;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+
+.step.active {
+    display: block;
+}
+
+.step .icon {
+    font-size: 4em;
+    margin-bottom: 20px;
+    animation: bounce 2s infinite;
+}
+
+.step h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #FFD700;
+}
+
+.step p {
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+/* Floating Coins Animation */
+.floating-coins {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.coin {
+    position: absolute;
+    font-size: 2em;
+    animation: float 6s infinite linear;
+    opacity: 0.3;
+}
+
+.coin:nth-child(1) {
+    left: 10%;
+    animation-delay: 0s;
+    animation-duration: 8s;
+}
+
+.coin:nth-child(2) {
+    left: 50%;
+    animation-delay: 2s;
+    animation-duration: 10s;
+}
+
+.coin:nth-child(3) {
+    left: 80%;
+    animation-delay: 4s;
+    animation-duration: 12s;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+@keyframes float {
+    0% { transform: translateY(100vh) rotate(0deg); }
+    100% { transform: translateY(-100px) rotate(360deg); }
+}
+
+/* Main App Styles (পূর্বের code সাথে রাখুন) */
+.container {
+    text-align: center;
+    padding: 20px;
+    max-width: 400px;
+    width: 100%;
+}
+
+.balance-container {
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    backdrop-filter: blur(10px);
+}
+
+.tap-coin {
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle at 30% 30%, #FFD700, #FFA500);
+    border-radius: 50%;
+    margin: 20px auto;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #8B7500;
+    box-shadow: 0 8px 25px rgba(255,215,0,0.4);
+    transition: transform 0.3s ease;
+}
+
+.tap-coin:active {
+    transform: scale(0.95);
+  }
