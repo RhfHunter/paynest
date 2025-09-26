@@ -1,24 +1,372 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Telegram Tap Bot</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TapCoin - Client Agreement</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <meta http-equiv="refresh" content="0; url=webapp/onboarding.html">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366F1;
+            --primary-dark: #4F46E5;
+            --secondary: #10B981;
+            --background: #0F172A;
+            --surface: #1E293B;
+            --text: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --border: #334155;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .agreement-container {
+            max-width: 100%;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .agreement-content {
+            flex: 1;
+            background: var(--surface);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .effective-date {
+            text-align: center;
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .agreement-text {
+            max-height: 50vh;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .agreement-text::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .agreement-text::-webkit-scrollbar-track {
+            background: var(--background);
+        }
+
+        .agreement-text::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin: 20px 0 10px 0;
+            font-size: 1.2rem;
+        }
+
+        h2:first-child {
+            margin-top: 0;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .highlight {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid #EF4444;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning-text {
+            color: #FCA5A5;
+            font-weight: 500;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .agree-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            max-width: 300px;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .agree-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .agree-btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .support-link {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-decoration: none;
+            border-bottom: 1px dashed var(--text-secondary);
+            padding-bottom: 1px;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox.checked {
+            background: var(--primary);
+        }
+
+        .checkbox.checked::after {
+            content: "✓";
+            color: white;
+            font-weight: bold;
+        }
+
+        .checkbox-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-height: 700px) {
+            .agreement-text {
+                max-height: 40vh;
+            }
+            
+            .logo {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <p>Redirecting to Tap Bot...</p>
+    <div class="agreement-container">
+        <div class="header">
+            <div class="logo">🪙</div>
+            <h1>TapCoin Client Agreement</h1>
+        </div>
+
+        <div class="agreement-content">
+            <div class="effective-date">
+                Effective Date: <strong>26.09.2024</strong>
+            </div>
+
+            <div class="agreement-text">
+                <h2>1. General Information</h2>
+                <p>This Client Agreement (hereinafter referred to as the "Agreement") governs your use of the TapCoin Telegram-based application (the "App" or "TapCoin"), operated by the TapCoin development team. Please read this Agreement carefully before using the App. By accessing or using TapCoin, you fully and unconditionally accept the terms outlined below.</p>
+
+                <h2>1.1. TapCoin Service</h2>
+                <p>TapCoin is a game-based application within Telegram that allows users to earn in-game rewards, participate in events, trade assets, compete in leaderboards, and receive tokens based on activity.</p>
+
+                <h2>1.2. Development Team</h2>
+                <p>TapCoin is developed by an independent team of developers with the goal of creating an innovative ecosystem that merges entertainment, social interaction, and economic opportunities.</p>
+
+                <h2>2. User Responsibilities</h2>
+                <p>2.1. You are responsible for maintaining the confidentiality of your account and any activities that occur under your account.</p>
+                <p>2.2. You agree to use the App only for lawful purposes and in accordance with this Agreement.</p>
+
+                <h2>3. Intellectual Property</h2>
+                <p>3.1. All content, features, and functionality of the App are owned by TapCoin developers and are protected by international copyright, trademark, and other intellectual property laws.</p>
+
+                <h2>4. Limitation of Liability</h2>
+                <p>4.1. The App is provided "as is" without any warranties of any kind. We do not guarantee uninterrupted or error-free operation of the App.</p>
+
+                <div class="highlight">
+                    <p class="warning-text">You must agree with client agreement. If you don't agree please contact <strong>SUPPORT</strong> to continue using app.</p>
+                </div>
+            </div>
+
+            <div class="checkbox-container">
+                <div class="checkbox" id="agreeCheckbox"></div>
+                <span class="checkbox-label">I have read and agree to the terms and conditions</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <button class="agree-btn" id="agreeButton" disabled>Agree & Continue</button>
+            <br>
+            <a href="https://t.me/tapcoin_support" class="support-link" target="_blank">Contact Support</a>
+        </div>
+    </div>
+
     <script>
-        // Telegram WebApp detection
-        const tg = window.Telegram?.WebApp;
-        if (tg) {
-            tg.ready();
-            window.location.href = 'webapp/onboarding.html';
-        } else {
-            // Fallback for non-Telegram browsers
-            setTimeout(() => {
-                window.location.href = 'webapp/onboarding.html';
-            }, 1000);
+        class AgreementManager {
+            constructor() {
+                this.agreeCheckbox = document.getElementById('agreeCheckbox');
+                this.agreeButton = document.getElementById('agreeButton');
+                this.isAgreed = false;
+                
+                this.init();
+            }
+
+            init() {
+                this.setupTelegram();
+                this.setupEventListeners();
+                this.checkExistingAgreement();
+            }
+
+            setupTelegram() {
+                const tg = window.Telegram?.WebApp;
+                if (tg) {
+                    tg.expand();
+                    tg.enableClosingConfirmation();
+                    tg.BackButton.hide();
+                }
+            }
+
+            setupEventListeners() {
+                // Checkbox click event
+                this.agreeCheckbox.addEventListener('click', () => {
+                    this.toggleAgreement();
+                });
+
+                // Agree button click event
+                this.agreeButton.addEventListener('click', () => {
+                    this.handleAgreement();
+                });
+
+                // Keyboard support
+                document.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && this.isAgreed) {
+                        this.handleAgreement();
+                    }
+                });
+            }
+
+            toggleAgreement() {
+                this.isAgreed = !this.isAgreed;
+                this.agreeCheckbox.classList.toggle('checked', this.isAgreed);
+                this.agreeButton.disabled = !this.isAgreed;
+                
+                // Haptic feedback
+                this.hapticFeedback();
+            }
+
+            async handleAgreement() {
+                if (!this.isAgreed) return;
+
+                // Show loading state
+                this.agreeButton.innerHTML = 'Processing...';
+                this.agreeButton.disabled = true;
+
+                // Save agreement to localStorage
+                localStorage.setItem('tapcoin_agreement', 'accepted');
+                localStorage.setItem('agreement_date', new Date().toISOString());
+
+                // Simulate API call delay
+                await this.delay(1000);
+
+                // Haptic feedback
+                this.hapticFeedback('medium');
+
+                // Redirect to onboarding
+                window.location.href = 'onboarding.html';
+            }
+
+            checkExistingAgreement() {
+                const existingAgreement = localStorage.getItem('tapcoin_agreement');
+                if (existingAgreement === 'accepted') {
+                    // Auto-redirect if already agreed
+                    window.location.href = 'onboarding.html';
+                }
+            }
+
+            hapticFeedback(type = 'light') {
+                const tg = window.Telegram?.WebApp;
+                if (tg?.HapticFeedback) {
+                    tg.HapticFeedback.impactOccurred(type);
+                }
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
         }
+
+        // Initialize the agreement manager when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new AgreementManager();
+        });
+
+        // Handle page visibility changes
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                // Check if user navigated back
+                const agreement = localStorage.getItem('tapcoin_agreement');
+                if (agreement === 'accepted') {
+                    window.location.href = 'onboarding.html';
+                }
+            }
+        });
     </script>
 </body>
 </html>
