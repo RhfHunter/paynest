@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to TapCoin</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="onboarding-container">
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">0%</div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="onboarding-content">
+            <div class="step active" id="step1">
+                <div class="icon">🚀</div>
+                <h2>Setting Up Your Account</h2>
+                <p>Preparing your TapCoin wallet...</p>
+            </div>
+
+            <div class="step" id="step2">
+                <div class="icon">👥</div>
+                <h2>Referral Bonus Applied</h2>
+                <p>+50 coins for joining through referral!</p>
+            </div>
+
+            <div class="step" id="step3">
+                <div class="icon">🎁</div>
+                <h2>Opening Bonus Added</h2>
+                <p>+100 welcome coins credited!</p>
+            </div>
+
+            <div class="step" id="step4">
+                <div class="icon">⭐</div>
+                <h2>Ready to Earn!</h2>
+                <p>Start tapping to collect more coins!</p>
+            </div>
+        </div>
+
+        <!-- Animated Coin -->
+        <div class="floating-coins">
+            <div class="coin">🪙</div>
+            <div class="coin">🪙</div>
+            <div class="coin">🪙</div>
+        </div>
+    </div>
+
+    <script src="onboarding.js"></script>
+</body>
+</html>
