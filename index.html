@@ -13,8 +13,8 @@
         }
 
         :root {
-            --primary: #8B5CF6;
-            --primary-dark: #7C3AED;
+            --primary: #6366F1;
+            --primary-dark: #4F46E5;
             --secondary: #10B981;
             --accent: #F59E0B;
             --background: #0F172A;
@@ -24,104 +24,135 @@
         }
 
         body {
-            font-family: 'Segoe UI', 'Bangla Sangam MN', 'Kalpurush', sans-serif;
+            font-family: 'Segoe UI', 'Kalpurush', 'SolaimanLipi', sans-serif;
             background: var(--background);
             color: var(--text);
             min-height: 100vh;
-            direction: ltr;
+            overflow: hidden;
         }
 
-        /* প্রি-লোডিং স্ক্রিন */
-        .preloader {
+        /* লোডিং কন্টেইনার */
+        .loading-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            background: var(--background);
             z-index: 1000;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.8s ease, transform 0.8s ease;
         }
 
-        .preloader.hidden {
+        .loading-container.hidden {
             opacity: 0;
+            transform: translateY(-50px);
             pointer-events: none;
         }
 
-        .loader-logo {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            animation: bounce 2s infinite;
-        }
-
-        .loader-text {
-            font-size: 1.5rem;
-            margin-bottom: 30px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .loading-bar-container {
-            width: 80%;
-            max-width: 300px;
-            height: 6px;
+        /* মেইন কার্ড */
+        .main-card {
             background: var(--surface);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 20px;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .loading-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 3px;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .loading-percentage {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--accent);
-        }
-
-        /* ড্যাশবোর্ড লোডিং স্ক্রিন */
-        .dashboard-loading {
-            display: none;
-            flex-direction: column;
+        .app-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-            text-align: center;
+            font-size: 2rem;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+            animation: bounce 2s ease-in-out infinite;
         }
 
-        .dashboard-loading.active {
+        .app-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .app-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        /* প্রোগ্রেস বার */
+        .progress-container {
+            width: 100%;
+            margin: 30px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--background);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.4), 
+                transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .progress-info {
             display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
 
-        .dashboard-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            animation: spin 3s linear infinite;
-        }
-
+        /* লোডিং স্টেপস */
         .loading-steps {
             width: 100%;
-            max-width: 400px;
+            margin-top: 20px;
         }
 
         .loading-step {
             display: flex;
             align-items: center;
-            justify-content: space-between;
             padding: 15px;
             margin: 10px 0;
-            background: var(--surface);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
             border-left: 4px solid transparent;
             transition: all 0.3s ease;
@@ -134,13 +165,7 @@
 
         .loading-step.completed {
             border-left-color: var(--primary);
-            background: rgba(139, 92, 246, 0.1);
-        }
-
-        .step-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            background: rgba(99, 102, 241, 0.1);
         }
 
         .step-icon {
@@ -150,31 +175,38 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            margin-right: 15px;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
         }
 
         .step-icon.pending {
             background: var(--surface);
             border: 2px solid var(--text-secondary);
+            color: var(--text-secondary);
         }
 
         .step-icon.active {
             background: var(--secondary);
             border: 2px solid var(--secondary);
+            color: white;
         }
 
         .step-icon.completed {
             background: var(--primary);
             border: 2px solid var(--primary);
+            color: white;
         }
 
-        .step-text {
+        .step-content {
+            flex: 1;
             text-align: left;
         }
 
         .step-title {
             font-weight: 600;
             margin-bottom: 2px;
+            font-size: 0.95rem;
         }
 
         .step-description {
@@ -183,40 +215,48 @@
         }
 
         .step-status {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 12px;
         }
 
         .status-pending {
+            background: var(--surface);
             color: var(--text-secondary);
         }
 
         .status-loading {
-            color: var(--accent);
+            background: var(--accent);
+            color: var(--background);
         }
 
         .status-completed {
-            color: var(--secondary);
+            background: var(--secondary);
+            color: white;
         }
 
-        /* মেইন ড্যাশবোর্ড */
+        /* ড্যাশবোর্ড */
         .dashboard {
             display: none;
             min-height: 100vh;
             padding: 20px;
+            background: var(--background);
+            animation: fadeIn 0.8s ease;
         }
 
         .dashboard.active {
             display: block;
         }
 
-        .welcome-section {
+        .dashboard-header {
             text-align: center;
-            margin-bottom: 30px;
+            padding: 40px 0 20px;
         }
 
-        .welcome-title {
+        .welcome-message {
             font-size: 1.8rem;
+            font-weight: 600;
             margin-bottom: 10px;
             background: linear-gradient(135deg, var(--primary), var(--accent));
             -webkit-background-clip: text;
@@ -224,23 +264,25 @@
         }
 
         .balance-card {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            padding: 25px;
+            background: var(--surface);
             border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
             text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
         .balance-label {
             font-size: 1rem;
-            opacity: 0.9;
+            color: var(--text-secondary);
             margin-bottom: 10px;
         }
 
         .balance-amount {
             font-size: 2.5rem;
             font-weight: 700;
+            color: var(--accent);
         }
 
         /* অ্যানিমেশন */
@@ -250,9 +292,9 @@
             60% { transform: translateY(-5px); }
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
         }
 
         @keyframes fadeIn {
@@ -260,82 +302,117 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .fade-in {
-            animation: fadeIn 0.5s ease;
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* লোডিং ডটস */
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 20px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            animation: dotPulse 1.4s infinite ease-in-out;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes dotPulse {
+            0%, 80%, 100% { 
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% { 
+                transform: scale(1.2);
+                opacity: 1;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- প্রি-লোডিং স্ক্রিন -->
-    <div class="preloader" id="preloader">
-        <div class="loader-logo">🪙</div>
-        <div class="loader-text">ট্যাপ কয়েন লোড হচ্ছে...</div>
-        <div class="loading-bar-container">
-            <div class="loading-bar" id="mainLoadingBar"></div>
-        </div>
-        <div class="loading-percentage" id="loadingPercentage">0%</div>
-    </div>
+    <!-- লোডিং স্ক্রিন -->
+    <div class="loading-container" id="loadingContainer">
+        <div class="main-card">
+            <div class="app-logo">🪙</div>
+            <h1 class="app-title">ট্যাপ কয়েন</h1>
+            <p class="app-subtitle">আয় করুন সহজে, ট্যাপ করে</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-info">
+                    <span>লোড হচ্ছে...</span>
+                    <span id="progressPercentage">0%</span>
+                </div>
+            </div>
 
-    <!-- ড্যাশবোর্ড লোডিং স্ক্রিন -->
-    <div class="dashboard-loading" id="dashboardLoading">
-        <div class="dashboard-icon">⏳</div>
-        <div class="loading-steps">
-            <div class="loading-step" id="step1">
-                <div class="step-info">
+            <div class="loading-steps">
+                <div class="loading-step" id="step1">
                     <div class="step-icon pending">1</div>
-                    <div class="step-text">
-                        <div class="step-title">অ্যাকাউন্ট লোড হচ্ছে</div>
-                        <div class="step-description">আপনার প্রোফাইল তথ্য সংগ্রহ করা হচ্ছে</div>
+                    <div class="step-content">
+                        <div class="step-title">অ্যাপ্লিকেশন শুরু হচ্ছে</div>
+                        <div class="step-description">সিস্টেম প্রস্তুত করা হচ্ছে</div>
                     </div>
+                    <div class="step-status status-pending">বাকি</div>
                 </div>
-                <div class="step-status status-pending">বাকি</div>
-            </div>
 
-            <div class="loading-step" id="step2">
-                <div class="step-info">
+                <div class="loading-step" id="step2">
                     <div class="step-icon pending">2</div>
-                    <div class="step-text">
-                        <div class="step-title">ব্যালেন্স লোড হচ্ছে</div>
-                        <div class="step-description">আপনার কয়েন ব্যালেন্স চেক করা হচ্ছে</div>
+                    <div class="step-content">
+                        <div class="step-title">অ্যাকাউন্ট ভেরিফাই করা হচ্ছে</div>
+                        <div class="step-description">আপনার প্রোফাইল চেক করা হচ্ছে</div>
                     </div>
+                    <div class="step-status status-pending">বাকি</div>
                 </div>
-                <div class="step-status status-pending">বাকি</div>
-            </div>
 
-            <div class="loading-step" id="step3">
-                <div class="step-info">
+                <div class="loading-step" id="step3">
                     <div class="step-icon pending">3</div>
-                    <div class="step-text">
+                    <div class="step-content">
+                        <div class="step-title">ব্যালেন্স লোড হচ্ছে</div>
+                        <div class="step-description">আপনার কয়েন সংগ্রহ করা হচ্ছে</div>
+                    </div>
+                    <div class="step-status status-pending">বাকি</div>
+                </div>
+
+                <div class="loading-step" id="step4">
+                    <div class="step-icon pending">4</div>
+                    <div class="step-content">
                         <div class="step-title">ডেটা সিঙ্ক্রোনাইজ হচ্ছে</div>
                         <div class="step-description">সর্বশেষ তথ্য আপডেট করা হচ্ছে</div>
                     </div>
+                    <div class="step-status status-pending">বাকি</div>
                 </div>
-                <div class="step-status status-pending">বাকি</div>
             </div>
 
-            <div class="loading-step" id="step4">
-                <div class="step-info">
-                    <div class="step-icon pending">4</div>
-                    <div class="step-text">
-                        <div class="step-title">প্রস্তুত হচ্ছে</div>
-                        <div class="step-description">অ্যাপটি চালু করার জন্য প্রস্তুত করা হচ্ছে</div>
-                    </div>
-                </div>
-                <div class="step-status status-pending">বাকি</div>
+            <div class="loading-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
             </div>
         </div>
     </div>
 
-    <!-- মেইন ড্যাশবোর্ড -->
+    <!-- ড্যাশবোর্ড -->
     <div class="dashboard" id="dashboard">
-        <div class="welcome-section">
-            <h1 class="welcome-title" id="welcomeTitle">স্বাগতম!</h1>
-            <p>আপনার ট্যাপ কয়েন ড্যাশবোর্ড</p>
+        <div class="dashboard-header">
+            <h1 class="welcome-message" id="welcomeMessage">স্বাগতম!</h1>
+            <p>আপনার ট্যাপ কয়েন অ্যাকাউন্ট প্রস্তুত</p>
         </div>
 
-        <div class="balance-card fade-in">
-            <div class="balance-label">আপনার ব্যালেন্স</div>
-            <div class="balance-amount" id="balanceAmount">০ কয়েন</div>
+        <div class="balance-card">
+            <div class="balance-label">মোট ব্যালেন্স</div>
+            <div class="balance-amount" id="balanceAmount">০</div>
+            <div class="balance-label">কয়েন</div>
         </div>
 
         <!-- এখানে অন্যান্য ড্যাশবোর্ড কম্পোনেন্ট যোগ করবেন -->
@@ -344,15 +421,16 @@
     <script>
         class BengaliApp {
             constructor() {
-                this.preloader = document.getElementById('preloader');
-                this.dashboardLoading = document.getElementById('dashboardLoading');
+                this.loadingContainer = document.getElementById('loadingContainer');
                 this.dashboard = document.getElementById('dashboard');
-                this.loadingBar = document.getElementById('mainLoadingBar');
-                this.loadingPercentage = document.getElementById('loadingPercentage');
-                this.welcomeTitle = document.getElementById('welcomeTitle');
+                this.progressFill = document.getElementById('progressFill');
+                this.progressPercentage = document.getElementById('progressPercentage');
+                this.welcomeMessage = document.getElementById('welcomeMessage');
                 this.balanceAmount = document.getElementById('balanceAmount');
                 
                 this.tg = window.Telegram?.WebApp;
+                this.currentProgress = 0;
+                
                 this.init();
             }
 
@@ -370,47 +448,36 @@
             }
 
             async startLoadingSequence() {
-                // ধাপ ১: প্রি-লোডিং বার
-                await this.animatePreloader();
+                // প্রোগ্রেস বার অ্যানিমেশন শুরু
+                this.animateProgressBar();
                 
-                // ধাপ ২: ড্যাশবোর্ড লোডিং স্টেপস
-                await this.animateDashboardLoading();
+                // স্টেপ বাই স্টেপ লোডিং
+                await this.animateLoadingSteps();
                 
-                // ধাপ ৩: মেইন ড্যাশবোর্ড দেখানো
-                this.showMainDashboard();
+                // লোডিং সম্পূর্ণ এবং ড্যাশবোর্ড দেখান
+                await this.completeLoading();
             }
 
-            animatePreloader() {
-                return new Promise((resolve) => {
-                    let progress = 0;
-                    const interval = setInterval(() => {
-                        progress += Math.random() * 10;
-                        if (progress >= 100) {
-                            progress = 100;
-                            clearInterval(interval);
-                            this.loadingBar.style.width = '100%';
-                            this.loadingPercentage.textContent = '100%';
-                            
-                            setTimeout(() => {
-                                this.preloader.classList.add('hidden');
-                                resolve();
-                            }, 500);
-                        } else {
-                            this.loadingBar.style.width = progress + '%';
-                            this.loadingPercentage.textContent = Math.round(progress) + '%';
-                        }
-                    }, 200);
-                });
+            animateProgressBar() {
+                const interval = setInterval(() => {
+                    if (this.currentProgress < 100) {
+                        this.currentProgress += Math.random() * 2;
+                        if (this.currentProgress > 100) this.currentProgress = 100;
+                        
+                        this.progressFill.style.width = this.currentProgress + '%';
+                        this.progressPercentage.textContent = Math.round(this.currentProgress) + '%';
+                    } else {
+                        clearInterval(interval);
+                    }
+                }, 100);
             }
 
-            async animateDashboardLoading() {
-                this.dashboardLoading.classList.add('active');
-                
+            async animateLoadingSteps() {
                 const steps = [
-                    { id: 'step1', delay: 1500, title: 'অ্যাকাউন্ট লোড হচ্ছে' },
-                    { id: 'step2', delay: 2000, title: 'ব্যালেন্স লোড হচ্ছে' },
-                    { id: 'step3', delay: 1800, title: 'ডেটা সিঙ্ক্রোনাইজ হচ্ছে' },
-                    { id: 'step4', delay: 1200, title: 'প্রস্তুত হচ্ছে' }
+                    { id: 'step1', delay: 1200, title: 'অ্যাপ্লিকেশন শুরু হচ্ছে' },
+                    { id: 'step2', delay: 1800, title: 'অ্যাকাউন্ট ভেরিফাই করা হচ্ছে' },
+                    { id: 'step3', delay: 1600, title: 'ব্যালেন্স লোড হচ্ছে' },
+                    { id: 'step4', delay: 1400, title: 'ডেটা সিঙ্ক্রোনাইজ হচ্ছে' }
                 ];
 
                 for (let i = 0; i < steps.length; i++) {
@@ -420,18 +487,26 @@
 
             animateStep(step, index) {
                 return new Promise((resolve) => {
-                    const stepElement = document.getElementById(step.id);
-                    const stepIcon = stepElement.querySelector('.step-icon');
-                    const stepStatus = stepElement.querySelector('.step-status');
-
-                    // স্টেপটি একটিভ করুন
                     setTimeout(() => {
+                        const stepElement = document.getElementById(step.id);
+                        const stepIcon = stepElement.querySelector('.step-icon');
+                        const stepStatus = stepElement.querySelector('.step-status');
+
+                        // স্টেপ একটিভ করুন
                         stepElement.classList.add('active');
                         stepIcon.classList.remove('pending');
                         stepIcon.classList.add('active');
                         stepStatus.textContent = 'লোড হচ্ছে...';
                         stepStatus.classList.remove('status-pending');
                         stepStatus.classList.add('status-loading');
+
+                        // প্রোগ্রেস আপডেট
+                        this.currentProgress = (index + 1) * 25;
+                        this.progressFill.style.width = this.currentProgress + '%';
+                        this.progressPercentage.textContent = this.currentProgress + '%';
+
+                        // হ্যাপটিক ফিডব্যাক
+                        this.hapticFeedback('light');
 
                         // স্টেপ কমপ্লিট করুন
                         setTimeout(() => {
@@ -443,36 +518,44 @@
                             stepStatus.classList.remove('status-loading');
                             stepStatus.classList.add('status-completed');
 
-                            // হ্যাপটিক ফিডব্যাক
-                            this.hapticFeedback('light');
                             resolve();
                         }, step.delay);
-                    }, index * 800);
+                    }, index * 1000);
                 });
             }
 
-            async showMainDashboard() {
-                // ড্যাশবোর্ড লোডিং লুকান
-                this.dashboardLoading.classList.remove('active');
-                
+            async completeLoading() {
+                // চূড়ান্ত প্রোগ্রেস সেট করুন
+                this.currentProgress = 100;
+                this.progressFill.style.width = '100%';
+                this.progressPercentage.textContent = '100%';
+
+                // শেষ হ্যাপটিক ফিডব্যাক
+                this.hapticFeedback('medium');
+
+                // ১ সেকেন্ড অপেক্ষা করুন
+                await this.delay(1000);
+
                 // ইউজার ডেটা লোড করুন
                 const userData = await this.loadUserData();
-                this.updateWelcomeMessage(userData);
-                
+                this.updateDashboard(userData);
+
+                // লোডিং স্ক্রিন হাইড করুন
+                this.loadingContainer.classList.add('hidden');
+
                 // ড্যাশবোর্ড দেখান
+                await this.delay(300);
                 this.dashboard.classList.add('active');
-                
-                // ফাইনাল হ্যাপটিক ফিডব্যাক
-                this.hapticFeedback('medium');
             }
 
             async loadUserData() {
                 // সিমুলেটেড API কল
-                await this.delay(1000);
+                await this.delay(800);
                 
+                const userName = this.getUserName();
                 return {
-                    name: this.getUserName(),
-                    balance: 1500 // সিমুলেটেড ব্যালেন্স
+                    name: userName,
+                    balance: Math.floor(Math.random() * 5000) + 1000
                 };
             }
 
@@ -485,12 +568,12 @@
                         return user.username;
                     }
                 }
-                return 'ব্যবহারকারী';
+                return 'প্রিয় ব্যবহারকারী';
             }
 
-            updateWelcomeMessage(userData) {
-                this.welcomeTitle.textContent = `${userData.name}-কে স্বাগতম!`;
-                this.balanceAmount.textContent = `${userData.balance.toLocaleString('bn-BD')} কয়েন`;
+            updateDashboard(userData) {
+                this.welcomeMessage.textContent = `${userData.name}-কে স্বাগতম!`;
+                this.balanceAmount.textContent = userData.balance.toLocaleString('bn-BD');
             }
 
             hapticFeedback(type = 'light') {
@@ -510,4 +593,4 @@
         });
     </script>
 </body>
-  </html>
+    </html>
