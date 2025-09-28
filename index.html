@@ -1,3 +1,226 @@
+         if (!parsedData.userId) {
+                            this.userData = {...this.userData, ...parsedData};
+                        } else if (parsedData.userId === this.userData.userId) {
+                            this.userData = {...this.userData, ...parsedData};
+                        }
+                    }
+                } catch (error) {
+                    console.log('Error loading user data:', error);
+                }
+            }
+
+            async checkReferral() {
+                // যদি URL এ রেফারেল ID থাকে
+                if (this.referrerId) {
+                    try {
+                        // এখানে backend API call করবেন রেফারার ডেটা পেতে
+                        // এখন mock data ব্যবহার করছি
+                        const referrerData = await this.getReferrerData(this.referrerId);
+                        
+                        if (referrerData) {
+                            this.userData.referredBy = {
+                                userId: referrerData.userId,
+                                name: referrerData.name,
+                                avatar: referrerData.avatar,
+                                bonus: 100
+                            };
+                            
+                            // রেফারেল বোনাস যোগ
+                            this.userData.balance += 100;
+                            this.userData.totalEarned += 100;
+                            
+                            // অনবোর্ডিং এ রেফারার ইনফো শো করা
+                            this.showReferrerInfo();
+                        }
+                    } catch (error) {
+                        console.log('Error checking referral:', error);
+                    }
+                }
+            }
+
+            async getReferrerData(referrerId) {
+                // Mock data - পরবর্তীতে real API call করবেন
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve({
+                            userId: referrerId,
+                            name: 'রফিকুল ইসলাম',
+                            avatar: 'র'
+                        });
+                    }, 500);
+                });
+            }
+
+            showReferrerInfo() {
+                if (this.userData.referredBy) {
+                    const referrerInfo = document.getElementById('referrerInfo');
+                    const referrerAvatar = document.getElementById('referrerAvatar');
+                    const referrerName = document.getElementById('referrerName');
+                    const referrerBonus = document.getElementById('referrerBonus');
+                    
+                    referrerAvatar.textContent = this.userData.referredBy.avatar;
+                    referrerName.textContent = this.userData.referredBy.name;
+                    referrerBonus.textContent = `+${this.userData.referredBy.bonus} টাকা বোনাস`;
+                    referrerInfo.style.display = 'block';
+                    
+                    // ড্যাশবোর্ডেও শো করা
+                    const dashboardReferrerInfo = document.getElementById('dashboardReferrerInfo');
+                    const dashboardReferrerAvatar = document.getElementById('dashboardReferrerAvatar');
+                    const dashboardReferrerName = document.getElementById('dashboardReferrerName');
+                    const dashboardReferrerBonus = document.getElementById('dashboardReferrerBonus');
+                    
+                    dashboardReferrerAvatar.textContent = this.userData.referredBy.avatar;
+                    dashboardReferrerName.textContent = this.userData.referredBy.name;
+                    dashboardReferrerBonus.textContent = `+${this.userData.referredBy.bonus} টাকা বোনাস প্রাপ্ত`;
+                    dashboardReferrerInfo.style.display = 'block';
+                }
+            }
+
+            checkOnboarding() {
+                // সবসময় অনবোর্ডিং শো করবে
+                this.onboarding.classList.remove('hidden');
+                this.appContainer.classList.remove('active');
+            }
+
+            showStep(stepNumber) {
+                // সব স্টেপ লুকানো
+                for (let i = 1; i <= this.totalSteps; i++) {
+                    const stepElement = document.getElementById(`step${i}`);
+                    if (stepElement) {
+                        stepElement.classList.remove('active');
+                    }
+                }
+
+                // বর্তমান স্টেপ শো করা
+                const currentStepElement = document.getElementById(`step${stepNumber}`);
+                if (currentStepElement) {
+                    currentStepElement.classList.add('active');
+                }
+
+                // প্রোগ্রেস ডট আপডেট
+                this.updateProgressDots(stepNumber);
+
+                this.currentStep = stepNumber;
+            }
+
+            updateProgressDots(stepNumber) {
+                // সব ডট রিসেট
+                const allDots = document.querySelectorAll('.step-dot');
+                allDots.forEach(dot => {
+                    dot.classList.remove('active');
+                });
+
+                // বর্তমান স্টেপের ডট একটিভ করা
+                if (stepNumber === 1) {
+                    document.getElementById('dot1').classList.add('active');
+                } else if (stepNumber === 2) {
+                    document.getElementById('dot5').classList.add('active');
+                } else if (stepNumber === 3) {
+                    document.getElementById('dot9').classList.add('active');
+                }
+            }
+
+            nextStep() {
+                if (this.currentStep < this.totalSteps) {
+                    this.showStep(this.currentStep + 1);
+                } else {
+                    this.completeOnboarding();
+                }
+            }
+
+            completeOnboarding() {
+                this.userData.hasOnboarded = true;
+                this.saveUserData();
+                this.onboarding.classList.add('hidden');
+                this.appContainer.classList.add('active');
+            }
+
+            updateUI() {
+                // ইউজার welcome message
+                const userName = this.userData.firstName || this.userData.username || 'ব্যবহারকারী';
+                this.userWelcome.textContent = `${userName}-কে স্বাগতম!`;
+                this.userSubtitle.textContent = 'আপনার আয়ের যাত্রা শুরু হোক';
+
+                this.balanceAmount.textContent = this.userData.balance + ' টাকা';
+                this.referralCode.textContent = this.userData.referralCode;
+                this.totalReferrals.textContent = this.userData.referrals;
+                this.referralEarnings.textContent = this.userData.referralEarnings + ' টাকা';
+            }
+
+            saveUserData() {
+                localStorage.setItem('earnMoneyData', JSON.stringify(this.userData));
+            }
+
+            // এড দেখে আয়
+            watchAd() {
+                const now = new Date();
+                if (this.userData.lastAdWatch && 
+                    (now - new Date(this.userData.lastAdWatch)) < 30000) {
+                    this.showMessage('আপনি ইতিমধ্যেই একটি এড দেখেছেন। কিছুক্ষণ পর আবার চেষ্টা করুন।');
+                    return;
+                }
+
+                const earnings = Math.floor(10 + Math.random() * 40);
+                this.userData.balance += earnings;
+                this.userData.totalEarned += earnings;
+                this.userData.lastAdWatch = now.toISOString();
+                
+                this.updateUI();
+                this.saveUserData();
+                this.showMessage(`🎉 ${earnings} টাকা আয় করেছেন!`, 'success');
+                this.hapticFeedback('medium');
+            }
+
+            // রেফারেল শেয়ার
+            showReferral() {
+                const shareText = `আয় করুন অ্যাপে যোগ দিন! আমার রেফারেল কোড: ${this.userData.referralCode}\n\n১০০ টাকা বোনাস পাবেন!\n\nলিঙ্ক: https://t.me/your_bot?start=${this.userData.referralCode}`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'আয় করুন অ্যাপ',
+                        text: shareText
+                    });
+                } else {
+                    navigator.clipboard.writeText(shareText);
+                    this.showMessage('রেফারেল লিঙ্ক কপি করা হয়েছে!', 'success');
+                }
+            }
+
+            showMessage(message, type = 'info') {
+                alert(message);
+            }
+
+            hapticFeedback(type = 'light') {
+                if (this.tg?.HapticFeedback) {
+                    this.tg.HapticFeedback.impactOccurred(type);
+                }
+            }
+        }
+
+        // গ্লোবাল ফাংশনস
+        function nextStep() {
+            window.earnApp.nextStep();
+        }
+
+        function startApp() {
+            window.earnApp.completeOnboarding();
+        }
+
+        function watchAd() {
+            window.earnApp.watchAd();
+        }
+
+        function showReferral() {
+            window.earnApp.showReferral();
+        }
+
+        // অ্যাপ শুরু
+        document.addEventListener('DOMContentLoaded', () => {
+            window.earnApp = new EarnMoneyApp();
+        });
+    </script>
+</body>
+</html>
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -152,6 +375,65 @@
             font-weight: 600;
         }
 
+        /* রেফার কোড ইনপুট */
+        .referral-input-section {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .referral-input-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--success);
+        }
+
+        .referral-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .referral-input {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: var(--text);
+            font-size: 1rem;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .referral-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .apply-button {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .apply-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .referral-note {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
         .onboarding-steps {
             display: flex;
             justify-content: center;
@@ -192,6 +474,17 @@
             min-width: 150px;
         }
 
+        .skip-button {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--text-secondary);
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -211,7 +504,7 @@
             animation: fadeIn 0.5s ease;
         }
 
-        /* বাকি CSS */
+        /* বাকি CSS আগের মতো */
         .header {
             text-align: center;
             padding: 20px 0;
@@ -463,7 +756,7 @@
     <!-- অনবোর্ডিং স্ক্রিন -->
     <div class="onboarding" id="onboarding">
         <div class="onboarding-content">
-            <!-- স্টেপ ১ - রেফারার ইনফো (যদি থাকে) -->
+            <!-- স্টেপ ১ - রেফারার ইনফো অথবা রেফার কোড ইনপুট -->
             <div class="onboarding-step active" id="step1">
                 <div class="onboarding-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -474,7 +767,7 @@
                 </div>
                 <h1 class="onboarding-title">স্বাগতম!</h1>
                 
-                <!-- রেফারার ইনফো (যদি থাকে) -->
+                <!-- রেফারার ইনফো (যদি URL থেকে আসে) -->
                 <div class="referrer-info" id="referrerInfo" style="display: none;">
                     <div class="referrer-header">আপনাকে আমন্ত্রণ জানিয়েছেন</div>
                     <div class="referrer-details">
@@ -483,6 +776,21 @@
                             <div class="referrer-name" id="referrerName">ব্যবহারকারী</div>
                             <div class="referrer-bonus" id="referrerBonus">+১০০ টাকা বোনাস</div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- রেফার কোড ইনপুট (যদি রেফারার না থাকে) -->
+                <div class="referral-input-section" id="referralInputSection" style="display: none;">
+                    <div class="referral-input-title">রেফার কোড দিন</div>
+                    <div class="referral-input-group">
+                        <input type="text" class="referral-input" id="referralCodeInput" 
+                               placeholder="রেফার কোড লিখুন" maxlength="20">
+                        <button class="apply-button" id="applyReferralButton" onclick="applyReferralCode()">
+                            প্রয়োগ করুন
+                        </button>
+                    </div>
+                    <div class="referral-note">
+                        রেফার কোড দিলে ১০০ টাকা বোনাস পাবেন
                     </div>
                 </div>
 
@@ -495,6 +803,7 @@
                 </div>
                 
                 <div class="onboarding-buttons">
+                    <button class="skip-button" onclick="skipReferralStep()">বাদ দিন</button>
                     <button class="next-button" onclick="nextStep()">পরবর্তী</button>
                 </div>
             </div>
@@ -578,387 +887,4 @@
                     <div class="earn-content">
                         <div class="earn-title">এড দেখুন</div>
                         <div class="earn-desc">ভিডিও এড দেখে আয় করুন</div>
-                        <div class="earn-amount">১০-৫০ টাকা প্রতি এড</div>
-                    </div>
-                    <button class="earn-button" onclick="watchAd()">দেখুন</button>
-                </div>
-
-                <!-- রেফারেল -->
-                <div class="earn-card referral">
-                    <div class="earn-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                            <circle cx="8.5" cy="7" r="4"/>
-                            <path d="m17 11 2 2 4-4"/>
-                        </svg>
-                    </div>
-                    <div class="earn-content">
-                        <div class="earn-title">বন্ধুকে রেফার করুন</div>
-                        <div class="earn-desc">বন্ধু এপ্লিকেশন ব্যবহার করলে আয় করুন</div>
-                        <div class="earn-amount">১০০ টাকা প্রতি রেফারেল</div>
-                    </div>
-                    <button class="earn-button" onclick="showReferral()">শেয়ার</button>
-                </div>
-            </div>
-
-            <!-- রেফারেল সেকশন -->
-            <div class="referral-section">
-                <div class="referral-title">বন্ধুকে রেফার করুন</div>
-                <div class="referral-code" id="referralCode">EARN12345</div>
-                <p>বন্ধু সাইন আপ করলে আপনি পাবেন ১০০ টাকা</p>
-                
-                <div class="referral-stats">
-                    <div class="stat-item">
-                        <div class="stat-value" id="totalReferrals">০</div>
-                        <div class="stat-label">মোট রেফারেল</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="referralEarnings">০ টাকা</div>
-                        <div class="stat-label">রেফারেল আয়</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- রেফারার ইনফো (ড্যাশবোর্ডে) -->
-            <div class="referrer-info" id="dashboardReferrerInfo" style="display: none; margin-top: 20px;">
-                <div class="referrer-header">আপনাকে আমন্ত্রণ জানিয়েছেন</div>
-                <div class="referrer-details">
-                    <div class="referrer-avatar" id="dashboardReferrerAvatar">U</div>
-                    <div class="referrer-text">
-                        <div class="referrer-name" id="dashboardReferrerName">ব্যবহারকারী</div>
-                        <div class="referrer-bonus" id="dashboardReferrerBonus">+১০০ টাকা বোনাস প্রাপ্ত</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- বটম নেভিগেশন -->
-    <div class="bottom-nav">
-        <div class="nav-item active">
-            <div class="nav-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                    <polyline points="9 22 9 12 15 12 15 22"/>
-                </svg>
-            </div>
-            <div class="nav-label">হোম</div>
-        </div>
-        <div class="nav-item">
-            <div class="nav-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
-                </svg>
-            </div>
-            <div class="nav-label">টাস্কস</div>
-        </div>
-        <div class="nav-item">
-            <div class="nav-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
-                </svg>
-            </div>
-            <div class="nav-label">প্রোফাইল</div>
-        </div>
-    </div>
-
-    <script>
-        class EarnMoneyApp {
-            constructor() {
-                this.currentStep = 1;
-                this.totalSteps = 3;
-                this.balanceAmount = document.getElementById('balanceAmount');
-                this.referralCode = document.getElementById('referralCode');
-                this.totalReferrals = document.getElementById('totalReferrals');
-                this.referralEarnings = document.getElementById('referralEarnings');
-                this.onboarding = document.getElementById('onboarding');
-                this.appContainer = document.getElementById('appContainer');
-                this.userWelcome = document.getElementById('userWelcome');
-                this.userSubtitle = document.getElementById('userSubtitle');
-                
-                this.tg = window.Telegram?.WebApp;
-                
-                // URL থেকে রেফারেল ডেটা পড়া
-                this.urlParams = new URLSearchParams(window.location.search);
-                this.referrerId = this.urlParams.get('ref');
-                
-                this.userData = {
-                    userId: null,
-                    firstName: '',
-                    lastName: '',
-                    username: '',
-                    photoUrl: '',
-                    balance: 0,
-                    totalEarned: 0,
-                    referrals: 0,
-                    referralEarnings: 0,
-                    completedTasks: [],
-                    referralCode: '',
-                    lastAdWatch: null,
-                    hasOnboarded: false,
-                    referredBy: null // {userId, name, avatar, bonus}
-                };
-                
-                this.init();
-            }
-
-            async init() {
-                this.setupTelegram();
-                await this.loadUserData();
-                await this.checkReferral();
-                this.checkOnboarding();
-                this.updateUI();
-                this.showStep(1);
-            }
-
-            setupTelegram() {
-                if (this.tg) {
-                    this.tg.expand();
-                    this.tg.enableClosingConfirmation();
-                    
-                    // Telegram user data collect
-                    const tgUser = this.tg.initDataUnsafe?.user;
-                    if (tgUser) {
-                        this.userData.userId = tgUser.id;
-                        this.userData.firstName = tgUser.first_name || '';
-                        this.userData.lastName = tgUser.last_name || '';
-                        this.userData.username = tgUser.username || '';
-                        this.userData.photoUrl = tgUser.photo_url || '';
-                        
-                        // Referral code generate user ID দিয়ে
-                        this.userData.referralCode = 'REF' + tgUser.id;
-                    }
-                }
-            }
-
-            async loadUserData() {
-                try {
-                    const saved = localStorage.getItem('earnMoneyData');
-                    if (saved) {
-                        const parsedData = JSON.parse(saved);
-                        
-                        // শুধু নতুন ইউজার হলে রেফারেল চেক করবে
-                        if (!parsedData.userId) {
-                            this.userData = {...this.userData, ...parsedData};
-                        } else if (parsedData.userId === this.userData.userId) {
-                            this.userData = {...this.userData, ...parsedData};
-                        }
-                    }
-                } catch (error) {
-                    console.log('Error loading user data:', error);
-                }
-            }
-
-            async checkReferral() {
-                // যদি URL এ রেফারেল ID থাকে
-                if (this.referrerId) {
-                    try {
-                        // এখানে backend API call করবেন রেফারার ডেটা পেতে
-                        // এখন mock data ব্যবহার করছি
-                        const referrerData = await this.getReferrerData(this.referrerId);
-                        
-                        if (referrerData) {
-                            this.userData.referredBy = {
-                                userId: referrerData.userId,
-                                name: referrerData.name,
-                                avatar: referrerData.avatar,
-                                bonus: 100
-                            };
-                            
-                            // রেফারেল বোনাস যোগ
-                            this.userData.balance += 100;
-                            this.userData.totalEarned += 100;
-                            
-                            // অনবোর্ডিং এ রেফারার ইনফো শো করা
-                            this.showReferrerInfo();
-                        }
-                    } catch (error) {
-                        console.log('Error checking referral:', error);
-                    }
-                }
-            }
-
-            async getReferrerData(referrerId) {
-                // Mock data - পরবর্তীতে real API call করবেন
-                return new Promise((resolve) => {
-                    setTimeout(() => {
-                        resolve({
-                            userId: referrerId,
-                            name: 'রফিকুল ইসলাম',
-                            avatar: 'র'
-                        });
-                    }, 500);
-                });
-            }
-
-            showReferrerInfo() {
-                if (this.userData.referredBy) {
-                    const referrerInfo = document.getElementById('referrerInfo');
-                    const referrerAvatar = document.getElementById('referrerAvatar');
-                    const referrerName = document.getElementById('referrerName');
-                    const referrerBonus = document.getElementById('referrerBonus');
-                    
-                    referrerAvatar.textContent = this.userData.referredBy.avatar;
-                    referrerName.textContent = this.userData.referredBy.name;
-                    referrerBonus.textContent = `+${this.userData.referredBy.bonus} টাকা বোনাস`;
-                    referrerInfo.style.display = 'block';
-                    
-                    // ড্যাশবোর্ডেও শো করা
-                    const dashboardReferrerInfo = document.getElementById('dashboardReferrerInfo');
-                    const dashboardReferrerAvatar = document.getElementById('dashboardReferrerAvatar');
-                    const dashboardReferrerName = document.getElementById('dashboardReferrerName');
-                    const dashboardReferrerBonus = document.getElementById('dashboardReferrerBonus');
-                    
-                    dashboardReferrerAvatar.textContent = this.userData.referredBy.avatar;
-                    dashboardReferrerName.textContent = this.userData.referredBy.name;
-                    dashboardReferrerBonus.textContent = `+${this.userData.referredBy.bonus} টাকা বোনাস প্রাপ্ত`;
-                    dashboardReferrerInfo.style.display = 'block';
-                }
-            }
-
-            checkOnboarding() {
-                // সবসময় অনবোর্ডিং শো করবে
-                this.onboarding.classList.remove('hidden');
-                this.appContainer.classList.remove('active');
-            }
-
-            showStep(stepNumber) {
-                // সব স্টেপ লুকানো
-                for (let i = 1; i <= this.totalSteps; i++) {
-                    const stepElement = document.getElementById(`step${i}`);
-                    if (stepElement) {
-                        stepElement.classList.remove('active');
-                    }
-                }
-
-                // বর্তমান স্টেপ শো করা
-                const currentStepElement = document.getElementById(`step${stepNumber}`);
-                if (currentStepElement) {
-                    currentStepElement.classList.add('active');
-                }
-
-                // প্রোগ্রেস ডট আপডেট
-                this.updateProgressDots(stepNumber);
-
-                this.currentStep = stepNumber;
-            }
-
-            updateProgressDots(stepNumber) {
-                // সব ডট রিসেট
-                const allDots = document.querySelectorAll('.step-dot');
-                allDots.forEach(dot => {
-                    dot.classList.remove('active');
-                });
-
-                // বর্তমান স্টেপের ডট একটিভ করা
-                if (stepNumber === 1) {
-                    document.getElementById('dot1').classList.add('active');
-                } else if (stepNumber === 2) {
-                    document.getElementById('dot5').classList.add('active');
-                } else if (stepNumber === 3) {
-                    document.getElementById('dot9').classList.add('active');
-                }
-            }
-
-            nextStep() {
-                if (this.currentStep < this.totalSteps) {
-                    this.showStep(this.currentStep + 1);
-                } else {
-                    this.completeOnboarding();
-                }
-            }
-
-            completeOnboarding() {
-                this.userData.hasOnboarded = true;
-                this.saveUserData();
-                this.onboarding.classList.add('hidden');
-                this.appContainer.classList.add('active');
-            }
-
-            updateUI() {
-                // ইউজার welcome message
-                const userName = this.userData.firstName || this.userData.username || 'ব্যবহারকারী';
-                this.userWelcome.textContent = `${userName}-কে স্বাগতম!`;
-                this.userSubtitle.textContent = 'আপনার আয়ের যাত্রা শুরু হোক';
-
-                this.balanceAmount.textContent = this.userData.balance + ' টাকা';
-                this.referralCode.textContent = this.userData.referralCode;
-                this.totalReferrals.textContent = this.userData.referrals;
-                this.referralEarnings.textContent = this.userData.referralEarnings + ' টাকা';
-            }
-
-            saveUserData() {
-                localStorage.setItem('earnMoneyData', JSON.stringify(this.userData));
-            }
-
-            // এড দেখে আয়
-            watchAd() {
-                const now = new Date();
-                if (this.userData.lastAdWatch && 
-                    (now - new Date(this.userData.lastAdWatch)) < 30000) {
-                    this.showMessage('আপনি ইতিমধ্যেই একটি এড দেখেছেন। কিছুক্ষণ পর আবার চেষ্টা করুন।');
-                    return;
-                }
-
-                const earnings = Math.floor(10 + Math.random() * 40);
-                this.userData.balance += earnings;
-                this.userData.totalEarned += earnings;
-                this.userData.lastAdWatch = now.toISOString();
-                
-                this.updateUI();
-                this.saveUserData();
-                this.showMessage(`🎉 ${earnings} টাকা আয় করেছেন!`, 'success');
-                this.hapticFeedback('medium');
-            }
-
-            // রেফারেল শেয়ার
-            showReferral() {
-                const shareText = `আয় করুন অ্যাপে যোগ দিন! আমার রেফারেল কোড: ${this.userData.referralCode}\n\n১০০ টাকা বোনাস পাবেন!\n\nলিঙ্ক: https://t.me/your_bot?start=${this.userData.referralCode}`;
-                
-                if (navigator.share) {
-                    navigator.share({
-                        title: 'আয় করুন অ্যাপ',
-                        text: shareText
-                    });
-                } else {
-                    navigator.clipboard.writeText(shareText);
-                    this.showMessage('রেফারেল লিঙ্ক কপি করা হয়েছে!', 'success');
-                }
-            }
-
-            showMessage(message, type = 'info') {
-                alert(message);
-            }
-
-            hapticFeedback(type = 'light') {
-                if (this.tg?.HapticFeedback) {
-                    this.tg.HapticFeedback.impactOccurred(type);
-                }
-            }
-        }
-
-        // গ্লোবাল ফাংশনস
-        function nextStep() {
-            window.earnApp.nextStep();
-        }
-
-        function startApp() {
-            window.earnApp.completeOnboarding();
-        }
-
-        function watchAd() {
-            window.earnApp.watchAd();
-        }
-
-        function showReferral() {
-            window.earnApp.showReferral();
-        }
-
-        // অ্যাপ শুরু
-        document.addEventListener('DOMContentLoaded', () => {
-            window.earnApp = new EarnMoneyApp();
-        });
-    </script>
-</body>
-</html>
+                        <div class="earn-amount">১০-৫০ টাকা প্রতি এ
