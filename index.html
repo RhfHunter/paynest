@@ -202,7 +202,7 @@
             display: flex;
         }
 
-        /* New Header Design with Profile */
+        /* Header Design with Profile */
         .header {
             background: var(--card);
             padding: 20px 20px 0;
@@ -279,7 +279,7 @@
             transform: scale(1.1);
         }
 
-        /* New Balance Card Design */
+        /* Balance Card Design */
         .balance-section {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             border-radius: 20px;
@@ -743,9 +743,26 @@
             color: white;
             font-size: 12px;
         }
+
+        /* Debug Info */
+        .debug-info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 9999;
+            display: none;
+        }
     </style>
 </head>
 <body>
+    <!-- Debug Info -->
+    <div class="debug-info" id="debugInfo"></div>
+
     <!-- Classic Onboarding Screen -->
     <div class="onboarding" id="onboarding">
         <div class="onboarding-container">
@@ -815,7 +832,7 @@
                 </div>
             </div>
             
-            <!-- New Balance Card Design -->
+            <!-- Balance Card Design -->
             <div class="balance-section">
                 <div class="balance-label">
                     <i class="fas fa-wallet"></i> মোট ব্যালেন্স
@@ -881,7 +898,7 @@
                                 </div>
                                 <div class="video-stat">
                                     <i class="fas fa-play"></i>
-                                    আজ দেখা: 0/10
+                                    আজ দেখা: <span id="todayShort">0</span>/10
                                 </div>
                             </div>
                             <p class="video-description">সংক্ষিপ্ত ভিডিও বিজ্ঞাপন দেখে দ্রুত আয় করুন</p>
@@ -902,7 +919,7 @@
                                 </div>
                                 <div class="video-stat">
                                     <i class="fas fa-play"></i>
-                                    আজ দেখা: 0/5
+                                    আজ দেখা: <span id="todayFull">0</span>/5
                                 </div>
                             </div>
                             <p class="video-description">পূর্ণ দৈর্ঘ্যের ভিডিও দেখে বেশি আয় করুন</p>
@@ -923,7 +940,7 @@
                                 </div>
                                 <div class="video-stat">
                                     <i class="fas fa-play"></i>
-                                    আজ দেখা: 0/8
+                                    আজ দেখা: <span id="todayGaming">0</span>/8
                                 </div>
                             </div>
                             <p class="video-description">গেমিং ভিডিও দেখে মজার সাথে আয় করুন</p>
@@ -1027,6 +1044,7 @@
         const progressBar = document.getElementById('progressBar');
         const indicators = document.querySelectorAll('.indicator');
         const mainApp = document.getElementById('mainApp');
+        const debugInfo = document.getElementById('debugInfo');
         
         // User data storage with Telegram ID
         let userData = {
@@ -1035,11 +1053,14 @@
             profilePhoto: null,
             balance: 0.00,
             videosWatched: 0,
-            todayVideos: 0,
+            todayShort: 0,
+            todayFull: 0,
+            todayGaming: 0,
             totalEarned: 0.00,
             tasksCompleted: 0,
             availableSpins: 0,
-            joinDate: new Date().toISOString()
+            joinDate: new Date().toISOString(),
+            lastSave: null
         };
         
         // Initialize onboarding
@@ -1052,18 +1073,15 @@
         
         // Update onboarding screen
         function updateOnboarding() {
-            // Hide all slides
             document.querySelectorAll('.onboarding-slide').forEach(slide => {
                 slide.classList.remove('active');
             });
             
-            // Show current slide
             const currentSlideElement = document.getElementById(`slide${currentSlide + 1}`);
             if (currentSlideElement) {
                 currentSlideElement.classList.add('active');
             }
             
-            // Update indicators
             indicators.forEach((indicator, index) => {
                 if (index === currentSlide) {
                     indicator.classList.add('active');
@@ -1072,10 +1090,8 @@
                 }
             });
             
-            // Update progress bar
             progressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
             
-            // Update button text
             if (currentSlide === totalSlides - 1) {
                 nextBtn.textContent = 'শুরু করুন';
             } else {
@@ -1095,7 +1111,6 @@
                 currentSlide++;
                 updateOnboarding();
             } else {
-                // Start the app
                 startApp();
             }
         });
@@ -1109,35 +1124,37 @@
 
         // Initialize Telegram WebApp
         function initTelegram() {
+            console.log('Initializing Telegram WebApp...');
+            
             if (window.Telegram && Telegram.WebApp) {
                 Telegram.WebApp.ready();
+                console.log('Telegram WebApp is ready');
+                
                 const user = Telegram.WebApp.initDataUnsafe.user;
+                console.log('Telegram User:', user);
                 
                 if (user) {
-                    // Set user data from Telegram
                     userData.telegramId = user.id;
                     userData.name = user.first_name || "ইউজার";
                     userData.profilePhoto = user.photo_url;
                     
-                    // Update UI with user info
                     updateUserProfile();
-                    
-                    // Load user data from storage based on Telegram ID
                     loadUserData();
                 } else {
-                    // Fallback for non-Telegram environment
                     userData.telegramId = 'demo_user_' + Date.now();
                     updateUserProfile();
                     loadUserData();
                 }
                 
                 updateUI();
+                updateDebugInfo('Telegram WebApp initialized');
             } else {
-                // Fallback for non-Telegram environment
+                console.log('Running in non-Telegram environment');
                 userData.telegramId = 'demo_user_' + Date.now();
                 updateUserProfile();
                 loadUserData();
                 updateUI();
+                updateDebugInfo('Non-Telegram environment');
             }
         }
         
@@ -1150,45 +1167,64 @@
             userNameElement.textContent = userData.name;
             userWelcomeElement.textContent = "ভিডিও দেখে আয় শুরু করুন";
             
-            // Set profile photo if available
             if (userData.profilePhoto) {
-                userAvatarElement.innerHTML = `<img src="${userData.profilePhoto}" alt="${userData.name}">`;
+                userAvatarElement.innerHTML = `<img src="${userData.profilePhoto}" alt="${userData.name}" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\\'fas fa-user\\'></i>'">`;
             } else {
                 userAvatarElement.innerHTML = `<i class="fas fa-user"></i>`;
             }
         }
         
-        // Load user data from localStorage using Telegram ID
+        // Load user data
         function loadUserData() {
-            if (!userData.telegramId) return;
+            if (!userData.telegramId) {
+                console.error('No Telegram ID found');
+                return;
+            }
             
             const storageKey = `telegram_earning_bot_${userData.telegramId}`;
-            const savedData = localStorage.getItem(storageKey);
+            console.log('Loading data with key:', storageKey);
             
-            if (savedData) {
-                try {
+            try {
+                const savedData = localStorage.getItem(storageKey);
+                console.log('Saved data from localStorage:', savedData);
+                
+                if (savedData) {
                     const parsedData = JSON.parse(savedData);
-                    // Merge saved data with current user data
                     userData = { ...userData, ...parsedData };
-                    console.log('User data loaded:', userData);
-                } catch (error) {
-                    console.error('Error loading user data:', error);
+                    console.log('User data loaded successfully:', userData);
+                    updateDebugInfo('Data loaded: ' + JSON.stringify(userData));
+                } else {
+                    console.log('No saved data found, using default data');
+                    updateDebugInfo('No saved data found');
+                    saveUserData(); // Save initial data
                 }
-            } else {
-                console.log('No saved data found for user:', userData.telegramId);
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                updateDebugInfo('Error loading: ' + error.message);
             }
         }
         
-        // Save user data to localStorage using Telegram ID
+        // Save user data
         function saveUserData() {
-            if (!userData.telegramId) return;
+            if (!userData.telegramId) {
+                console.error('No Telegram ID found for saving');
+                return;
+            }
             
             const storageKey = `telegram_earning_bot_${userData.telegramId}`;
+            userData.lastSave = new Date().toISOString();
+            
             try {
                 localStorage.setItem(storageKey, JSON.stringify(userData));
-                console.log('User data saved:', userData);
+                console.log('User data saved successfully:', userData);
+                updateDebugInfo('Data saved: Balance $' + userData.balance.toFixed(2));
+                
+                // Verify the save
+                const verifyData = localStorage.getItem(storageKey);
+                console.log('Verification - loaded data:', verifyData);
             } catch (error) {
                 console.error('Error saving user data:', error);
+                updateDebugInfo('Error saving: ' + error.message);
             }
         }
         
@@ -1198,25 +1234,44 @@
             document.getElementById('videosWatched').textContent = userData.videosWatched;
             document.getElementById('completedTasks').textContent = userData.tasksCompleted;
             document.getElementById('availableSpins').textContent = userData.availableSpins;
+            document.getElementById('todayShort').textContent = userData.todayShort;
+            document.getElementById('todayFull').textContent = userData.todayFull;
+            document.getElementById('todayGaming').textContent = userData.todayGaming;
         }
         
         // Watch video ad function
         function watchVideoAd(type) {
             let reward = 0;
             let duration = "";
+            let todayField = "";
             
             switch(type) {
                 case 'short':
                     reward = 0.10;
                     duration = "30 সেকেন্ড";
+                    todayField = "todayShort";
+                    if (userData.todayShort >= 10) {
+                        showNotification("আজকের লিমিট শেষ!");
+                        return;
+                    }
                     break;
                 case 'full':
                     reward = 0.25;
                     duration = "2 মিনিট";
+                    todayField = "todayFull";
+                    if (userData.todayFull >= 5) {
+                        showNotification("আজকের লিমিট শেষ!");
+                        return;
+                    }
                     break;
                 case 'gaming':
                     reward = 0.15;
                     duration = "1 মিনিট";
+                    todayField = "todayGaming";
+                    if (userData.todayGaming >= 8) {
+                        showNotification("আজকের লিমিট শেষ!");
+                        return;
+                    }
                     break;
             }
             
@@ -1226,7 +1281,8 @@
                 userData.balance += reward;
                 userData.totalEarned += reward;
                 userData.videosWatched++;
-                userData.todayVideos++;
+                userData[todayField]++;
+                
                 saveUserData();
                 updateUI();
                 showNotification(`সফল! $${reward.toFixed(2)} যোগ হয়েছে`);
@@ -1259,6 +1315,7 @@
                 userData.balance += reward;
                 userData.totalEarned += reward;
                 userData.tasksCompleted++;
+                
                 saveUserData();
                 updateUI();
                 showNotification(`সফল! $${reward.toFixed(2)} যোগ হয়েছে`);
@@ -1290,10 +1347,46 @@
             }, 3000);
         }
         
+        // Update debug info
+        function updateDebugInfo(message) {
+            debugInfo.textContent = message;
+            debugInfo.style.display = 'block';
+            setTimeout(() => {
+                debugInfo.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Reset daily limits (for testing)
+        function resetDailyLimits() {
+            userData.todayShort = 0;
+            userData.todayFull = 0;
+            userData.todayGaming = 0;
+            saveUserData();
+            updateUI();
+            showNotification("ডেইলি লিমিট রিসেট হয়েছে!");
+        }
+        
         // Initialize the app
         window.onload = function() {
+            console.log('App starting...');
             initOnboarding();
             initTelegram();
+            
+            // Add reset button for testing
+            const resetBtn = document.createElement('button');
+            resetBtn.textContent = 'রিসেট';
+            resetBtn.style.position = 'fixed';
+            resetBtn.style.top = '10px';
+            resetBtn.style.right = '10px';
+            resetBtn.style.zIndex = '9999';
+            resetBtn.style.padding = '5px 10px';
+            resetBtn.style.background = '#ff4444';
+            resetBtn.style.color = 'white';
+            resetBtn.style.border = 'none';
+            resetBtn.style.borderRadius = '5px';
+            resetBtn.style.cursor = 'pointer';
+            resetBtn.onclick = resetDailyLimits;
+            document.body.appendChild(resetBtn);
         };
     </script>
 </body>
