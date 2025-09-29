@@ -1,488 +1,96 @@
-         if (!parsedData.userId) {
-                            this.userData = {...this.userData, ...parsedData};
-                        } else if (parsedData.userId === this.userData.userId) {
-                            this.userData = {...this.userData, ...parsedData};
-                        }
-                    }
-                } catch (error) {
-                    console.log('Error loading user data:', error);
-                }
-            }
-
-            async checkReferral() {
-                // যদি URL এ রেফারেল ID থাকে
-                if (this.referrerId) {
-                    try {
-                        // এখানে backend API call করবেন রেফারার ডেটা পেতে
-                        // এখন mock data ব্যবহার করছি
-                        const referrerData = await this.getReferrerData(this.referrerId);
-                        
-                        if (referrerData) {
-                            this.userData.referredBy = {
-                                userId: referrerData.userId,
-                                name: referrerData.name,
-                                avatar: referrerData.avatar,
-                                bonus: 100
-                            };
-                            
-                            // রেফারেল বোনাস যোগ
-                            this.userData.balance += 100;
-                            this.userData.totalEarned += 100;
-                            
-                            // অনবোর্ডিং এ রেফারার ইনফো শো করা
-                            this.showReferrerInfo();
-                        }
-                    } catch (error) {
-                        console.log('Error checking referral:', error);
-                    }
-                }
-            }
-
-            async getReferrerData(referrerId) {
-                // Mock data - পরবর্তীতে real API call করবেন
-                return new Promise((resolve) => {
-                    setTimeout(() => {
-                        resolve({
-                            userId: referrerId,
-                            name: 'রফিকুল ইসলাম',
-                            avatar: 'র'
-                        });
-                    }, 500);
-                });
-            }
-
-            showReferrerInfo() {
-                if (this.userData.referredBy) {
-                    const referrerInfo = document.getElementById('referrerInfo');
-                    const referrerAvatar = document.getElementById('referrerAvatar');
-                    const referrerName = document.getElementById('referrerName');
-                    const referrerBonus = document.getElementById('referrerBonus');
-                    
-                    referrerAvatar.textContent = this.userData.referredBy.avatar;
-                    referrerName.textContent = this.userData.referredBy.name;
-                    referrerBonus.textContent = `+${this.userData.referredBy.bonus} টাকা বোনাস`;
-                    referrerInfo.style.display = 'block';
-                    
-                    // ড্যাশবোর্ডেও শো করা
-                    const dashboardReferrerInfo = document.getElementById('dashboardReferrerInfo');
-                    const dashboardReferrerAvatar = document.getElementById('dashboardReferrerAvatar');
-                    const dashboardReferrerName = document.getElementById('dashboardReferrerName');
-                    const dashboardReferrerBonus = document.getElementById('dashboardReferrerBonus');
-                    
-                    dashboardReferrerAvatar.textContent = this.userData.referredBy.avatar;
-                    dashboardReferrerName.textContent = this.userData.referredBy.name;
-                    dashboardReferrerBonus.textContent = `+${this.userData.referredBy.bonus} টাকা বোনাস প্রাপ্ত`;
-                    dashboardReferrerInfo.style.display = 'block';
-                }
-            }
-
-            checkOnboarding() {
-                // সবসময় অনবোর্ডিং শো করবে
-                this.onboarding.classList.remove('hidden');
-                this.appContainer.classList.remove('active');
-            }
-
-            showStep(stepNumber) {
-                // সব স্টেপ লুকানো
-                for (let i = 1; i <= this.totalSteps; i++) {
-                    const stepElement = document.getElementById(`step${i}`);
-                    if (stepElement) {
-                        stepElement.classList.remove('active');
-                    }
-                }
-
-                // বর্তমান স্টেপ শো করা
-                const currentStepElement = document.getElementById(`step${stepNumber}`);
-                if (currentStepElement) {
-                    currentStepElement.classList.add('active');
-                }
-
-                // প্রোগ্রেস ডট আপডেট
-                this.updateProgressDots(stepNumber);
-
-                this.currentStep = stepNumber;
-            }
-
-            updateProgressDots(stepNumber) {
-                // সব ডট রিসেট
-                const allDots = document.querySelectorAll('.step-dot');
-                allDots.forEach(dot => {
-                    dot.classList.remove('active');
-                });
-
-                // বর্তমান স্টেপের ডট একটিভ করা
-                if (stepNumber === 1) {
-                    document.getElementById('dot1').classList.add('active');
-                } else if (stepNumber === 2) {
-                    document.getElementById('dot5').classList.add('active');
-                } else if (stepNumber === 3) {
-                    document.getElementById('dot9').classList.add('active');
-                }
-            }
-
-            nextStep() {
-                if (this.currentStep < this.totalSteps) {
-                    this.showStep(this.currentStep + 1);
-                } else {
-                    this.completeOnboarding();
-                }
-            }
-
-            completeOnboarding() {
-                this.userData.hasOnboarded = true;
-                this.saveUserData();
-                this.onboarding.classList.add('hidden');
-                this.appContainer.classList.add('active');
-            }
-
-            updateUI() {
-                // ইউজার welcome message
-                const userName = this.userData.firstName || this.userData.username || 'ব্যবহারকারী';
-                this.userWelcome.textContent = `${userName}-কে স্বাগতম!`;
-                this.userSubtitle.textContent = 'আপনার আয়ের যাত্রা শুরু হোক';
-
-                this.balanceAmount.textContent = this.userData.balance + ' টাকা';
-                this.referralCode.textContent = this.userData.referralCode;
-                this.totalReferrals.textContent = this.userData.referrals;
-                this.referralEarnings.textContent = this.userData.referralEarnings + ' টাকা';
-            }
-
-            saveUserData() {
-                localStorage.setItem('earnMoneyData', JSON.stringify(this.userData));
-            }
-
-            // এড দেখে আয়
-            watchAd() {
-                const now = new Date();
-                if (this.userData.lastAdWatch && 
-                    (now - new Date(this.userData.lastAdWatch)) < 30000) {
-                    this.showMessage('আপনি ইতিমধ্যেই একটি এড দেখেছেন। কিছুক্ষণ পর আবার চেষ্টা করুন।');
-                    return;
-                }
-
-                const earnings = Math.floor(10 + Math.random() * 40);
-                this.userData.balance += earnings;
-                this.userData.totalEarned += earnings;
-                this.userData.lastAdWatch = now.toISOString();
-                
-                this.updateUI();
-                this.saveUserData();
-                this.showMessage(`🎉 ${earnings} টাকা আয় করেছেন!`, 'success');
-                this.hapticFeedback('medium');
-            }
-
-            // রেফারেল শেয়ার
-            showReferral() {
-                const shareText = `আয় করুন অ্যাপে যোগ দিন! আমার রেফারেল কোড: ${this.userData.referralCode}\n\n১০০ টাকা বোনাস পাবেন!\n\nলিঙ্ক: https://t.me/your_bot?start=${this.userData.referralCode}`;
-                
-                if (navigator.share) {
-                    navigator.share({
-                        title: 'আয় করুন অ্যাপ',
-                        text: shareText
-                    });
-                } else {
-                    navigator.clipboard.writeText(shareText);
-                    this.showMessage('রেফারেল লিঙ্ক কপি করা হয়েছে!', 'success');
-                }
-            }
-
-            showMessage(message, type = 'info') {
-                alert(message);
-            }
-
-            hapticFeedback(type = 'light') {
-                if (this.tg?.HapticFeedback) {
-                    this.tg.HapticFeedback.impactOccurred(type);
-                }
-            }
-        }
-
-        // গ্লোবাল ফাংশনস
-        function nextStep() {
-            window.earnApp.nextStep();
-        }
-
-        function startApp() {
-            window.earnApp.completeOnboarding();
-        }
-
-        function watchAd() {
-            window.earnApp.watchAd();
-        }
-
-        function showReferral() {
-            window.earnApp.showReferral();
-        }
-
-        // অ্যাপ শুরু
-        document.addEventListener('DOMContentLoaded', () => {
-            window.earnApp = new EarnMoneyApp();
-        });
-    </script>
-</body>
-</html>
 <!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>আয় করুন - Earn Money</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram আর্নিং বট</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --success: #10b981;
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #8b5cf6;
+            --secondary: #f59e0b;
+            --accent: #10b981;
+            --success: #22c55e;
             --warning: #f59e0b;
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --text: #f1f5f9;
-            --text-secondary: #94a3b8;
+            --background: #ffffff;
+            --surface: #f8fafc;
+            --card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --gradient-accent: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --video-gradient: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
         }
-
+        
         body {
-            font-family: 'Segoe UI', 'Kalpurush', sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            background: var(--background);
+            color: var(--text-primary);
             min-height: 100vh;
+            overflow-x: hidden;
+            padding: 0;
         }
 
-        /* অনবোর্ডিং স্ক্রিন */
+        /* Classic Onboarding Design */
         .onboarding {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--bg);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             z-index: 1000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 30px;
+            padding: 20px;
         }
 
         .onboarding.hidden {
             display: none;
         }
 
-        .onboarding-content {
-            text-align: center;
+        .onboarding-container {
+            background: white;
+            border-radius: 25px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             max-width: 400px;
-            width: 100%;
-        }
-
-        .onboarding-step {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .onboarding-step.active {
-            display: block;
-        }
-
-        .onboarding-icon {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 30px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .onboarding-icon svg {
-            width: 60px;
-            height: 60px;
-            color: white;
-        }
-
-        .onboarding-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, var(--primary), var(--success));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .onboarding-subtitle {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-            line-height: 1.5;
-        }
-
-        /* রেফারার ইনফো স্টাইল */
-        .referrer-info {
-            background: rgba(37, 99, 235, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            border: 1px solid rgba(37, 99, 235, 0.3);
-        }
-
-        .referrer-header {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--primary);
-        }
-
-        .referrer-details {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .referrer-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 1.2rem;
-        }
-
-        .referrer-text {
-            text-align: left;
-            flex: 1;
-        }
-
-        .referrer-name {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .referrer-bonus {
-            font-size: 0.9rem;
-            color: var(--success);
-            font-weight: 600;
-        }
-
-        /* রেফার কোড ইনপুট */
-        .referral-input-section {
-            background: rgba(16, 185, 129, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-
-        .referral-input-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--success);
-        }
-
-        .referral-input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .referral-input {
-            flex: 1;
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            padding: 12px 15px;
-            color: var(--text);
-            font-size: 1rem;
+            width: 90%;
             text-align: center;
-            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .referral-input::placeholder {
-            color: var(--text-secondary);
+        .onboarding-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--gradient-primary);
         }
 
-        .apply-button {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
+        .onboarding-slide {
+            display: none;
         }
 
-        .apply-button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .referral-note {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .onboarding-steps {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 30px 0;
-        }
-
-        .step-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--text-secondary);
-            opacity: 0.3;
-            transition: all 0.3s ease;
-        }
-
-        .step-dot.active {
-            background: var(--primary);
-            opacity: 1;
-            transform: scale(1.2);
-        }
-
-        .onboarding-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .next-button, .start-button {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 25px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            min-width: 150px;
-        }
-
-        .skip-button {
-            background: transparent;
-            color: var(--text-secondary);
-            border: 1px solid var(--text-secondary);
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
+        .onboarding-slide.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
         }
 
         @keyframes fadeIn {
@@ -490,401 +98,1105 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* মেইন অ্যাপ */
-        .app-container {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            padding-bottom: 80px;
-            display: none;
-        }
-
-        .app-container.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        /* বাকি CSS আগের মতো */
-        .header {
-            text-align: center;
-            padding: 20px 0;
-            margin-bottom: 20px;
-        }
-
-        .logo {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 15px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border-radius: 50%;
+        .onboarding-icon {
+            width: 100px;
+            height: 100px;
+            background: var(--gradient-primary);
+            border-radius: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin: 0 auto 30px;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
         }
 
-        .logo svg {
-            width: 30px;
-            height: 30px;
+        .onboarding-icon i {
+            font-size: 45px;
             color: white;
         }
 
-        .app-title {
-            font-size: 1.8rem;
+        .onboarding-title {
+            font-size: 26px;
             font-weight: 700;
-            margin-bottom: 5px;
-            background: linear-gradient(135deg, var(--primary), var(--success));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            line-height: 1.3;
         }
 
-        .balance-card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 25px;
-            text-align: center;
+        .onboarding-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        .onboarding-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .indicator.active {
+            background: var(--primary);
+            transform: scale(1.2);
+        }
+
+        .onboarding-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+            width: 100%;
+            max-width: 250px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .onboarding-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .onboarding-progress {
+            width: 200px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            margin: 0 auto 30px;
+            overflow: hidden;
+        }
+
+        .onboarding-progress-bar {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .skip-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 20px;
+            padding: 10px 20px;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+
+        .skip-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text-primary);
+        }
+
+        /* Main App */
+        .main-app {
+            min-height: 100vh;
+            background: var(--surface);
+            display: none;
+            flex-direction: column;
+        }
+
+        .main-app.active {
+            display: flex;
+        }
+
+        /* Header */
+        .header {
+            background: var(--card);
+            padding: 20px 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            border-radius: 0 0 25px 25px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .greeting h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .greeting p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .notification-bell {
+            width: 45px;
+            height: 45px;
+            background: var(--surface);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+        }
+
+        .notification-bell:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Balance Card */
+        .balance-card {
+            background: var(--gradient-primary);
+            border-radius: 20px;
+            padding: 25px;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
         }
 
         .balance-label {
-            font-size: 1rem;
-            color: var(--text-secondary);
+            font-size: 14px;
+            opacity: 0.9;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .balance-amount {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--warning);
+            font-size: 36px;
+            font-weight: bold;
+            margin: 10px 0;
         }
 
-        .earn-options {
-            display: grid;
-            gap: 15px;
+        .balance-subtext {
+            font-size: 13px;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Video Income Section */
+        .video-income-section {
+            background: var(--card);
+            margin: 20px;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
         }
 
-        .earn-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
             display: flex;
             align-items: center;
+            gap: 10px;
+        }
+
+        .section-title.video-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--video-gradient);
+            border-radius: 2px;
+        }
+
+        .video-grid {
+            display: grid;
             gap: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.2s ease;
         }
 
-        .earn-card:active {
-            transform: scale(0.98);
+        .video-card {
+            background: var(--surface);
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .earn-icon {
-            width: 50px;
-            height: 50px;
+        .video-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--video-gradient);
+        }
+
+        .video-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.2);
+            border-color: #ff6b6b;
+        }
+
+        .video-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .video-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 16px;
+            flex: 1;
+        }
+
+        .video-reward {
+            color: #ff6b6b;
+            font-weight: bold;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 107, 107, 0.1);
+            padding: 6px 12px;
+            border-radius: 10px;
+        }
+
+        .video-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .video-stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .video-stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
             border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
+            gap: 8px;
         }
 
-        .earn-icon svg {
-            width: 24px;
-            height: 24px;
+        .btn.video-btn {
+            background: var(--video-gradient);
         }
 
-        .watch-ads .earn-icon {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
         }
 
-        .referral .earn-icon {
-            background: linear-gradient(135deg, var(--success), #059669);
+        .btn.video-btn:hover {
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
         }
 
-        .tasks .earn-icon {
-            background: linear-gradient(135deg, var(--warning), #d97706);
+        /* Tasks Section */
+        .tasks-section {
+            background: var(--card);
+            margin: 20px;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
         }
 
-        .earn-content {
-            flex: 1;
-            text-align: left;
+        .section-title.task-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--gradient-accent);
+            border-radius: 2px;
         }
 
-        .earn-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 5px;
+        .task-grid {
+            display: grid;
+            gap: 15px;
         }
 
-        .earn-desc {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-
-        .earn-amount {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--warning);
-        }
-
-        .earn-button {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .referral-section {
-            background: linear-gradient(135deg, var(--success), #059669);
+        .task-card {
+            background: var(--surface);
             border-radius: 15px;
             padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .referral-title {
-            font-size: 1.2rem;
+        .task-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-accent);
+        }
+
+        .task-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .task-title {
             font-weight: 600;
-            margin-bottom: 10px;
-            color: white;
+            color: var(--text-primary);
+            font-size: 16px;
+            flex: 1;
         }
 
-        .referral-code {
-            background: rgba(255, 255, 255, 0.2);
+        .task-reward {
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 6px 12px;
             border-radius: 10px;
-            padding: 15px;
-            font-family: monospace;
-            font-size: 1.3rem;
-            letter-spacing: 2px;
-            margin: 15px 0;
-            color: white;
         }
 
-        .referral-stats {
+        .task-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        /* Quick Stats */
+        .quick-stats {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
-            margin-top: 15px;
+            margin: 20px;
         }
 
         .stat-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 8px;
+            background: var(--card);
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            cursor: pointer;
         }
 
+        .stat-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--surface);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 18px;
+        }
+
+        .stat-icon.earnings { color: #10b981; }
+        .stat-icon.tasks { color: #f59e0b; }
+        .stat-icon.spins { color: #6366f1; }
+
         .stat-value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 2px;
-            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 5px;
         }
 
         .stat-label {
-            font-size: 0.8rem;
-            opacity: 0.9;
-            color: white;
+            font-size: 12px;
+            color: var(--text-secondary);
         }
 
-        /* বটম নেভিগেশন */
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding-bottom: 80px;
+            background: var(--surface);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: var(--card-bg);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 10px 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            max-width: 400px;
-            margin: 0 auto;
+            background: var(--card);
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            border-top: 1px solid var(--border);
         }
 
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
-            padding: 10px;
-            border-radius: 10px;
-            transition: background 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 15px;
             cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-secondary);
+            flex: 1;
+            text-align: center;
+            position: relative;
         }
 
         .nav-item.active {
-            background: rgba(37, 99, 235, 0.2);
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
         }
 
         .nav-icon {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 4px;
+            transition: all 0.3s;
         }
 
-        .nav-icon svg {
-            width: 20px;
-            height: 20px;
-            color: var(--text-secondary);
-        }
-
-        .nav-item.active .nav-icon svg {
-            color: var(--primary);
+        .nav-item.active .nav-icon {
+            transform: scale(1.2);
         }
 
         .nav-label {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 500;
+            transition: all 0.3s;
         }
 
-        .nav-item.active .nav-label {
-            color: var(--primary);
-            font-weight: 600;
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card);
+            color: var(--text-primary);
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transform: translateX(150%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            max-width: 300px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--gradient-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
-    <!-- অনবোর্ডিং স্ক্রিন -->
+    <!-- Classic Onboarding Screen -->
     <div class="onboarding" id="onboarding">
-        <div class="onboarding-content">
-            <!-- স্টেপ ১ - রেফারার ইনফো অথবা রেফার কোড ইনপুট -->
-            <div class="onboarding-step active" id="step1">
+        <div class="onboarding-container">
+            <div class="onboarding-progress">
+                <div class="onboarding-progress-bar" id="progressBar"></div>
+            </div>
+            
+            <div class="onboarding-slide active" id="slide1">
                 <div class="onboarding-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                        <circle cx="8.5" cy="7" r="4"/>
-                        <path d="m17 11 2 2 4-4"/>
-                    </svg>
+                    <i class="fas fa-play-circle"></i>
                 </div>
-                <h1 class="onboarding-title">স্বাগতম!</h1>
-                
-                <!-- রেফারার ইনফো (যদি URL থেকে আসে) -->
-                <div class="referrer-info" id="referrerInfo" style="display: none;">
-                    <div class="referrer-header">আপনাকে আমন্ত্রণ জানিয়েছেন</div>
-                    <div class="referrer-details">
-                        <div class="referrer-avatar" id="referrerAvatar">U</div>
-                        <div class="referrer-text">
-                            <div class="referrer-name" id="referrerName">ব্যবহারকারী</div>
-                            <div class="referrer-bonus" id="referrerBonus">+১০০ টাকা বোনাস</div>
+                <h2 class="onboarding-title">ভিডিও দেখে আয় করুন</h2>
+                <p class="onboarding-description">প্রতিদিন ভিডিও দেখে সহজেই আয় করুন। আমাদের মেইন ইনকাম সোর্স ভিডিও এড ভিউিং সিস্টেম।</p>
+            </div>
+            
+            <div class="onboarding-slide" id="slide2">
+                <div class="onboarding-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <h2 class="onboarding-title">বিভিন্ন টাস্ক</h2>
+                <p class="onboarding-description">ভিডিও ছাড়াও অন্যান্য টাস্ক সম্পন্ন করে অতিরিক্ত আয় করুন।</p>
+            </div>
+            
+            <div class="onboarding-slide" id="slide3">
+                <div class="onboarding-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h2 class="onboarding-title">বন্ধুদের রেফার করুন</h2>
+                <p class="onboarding-description">বন্ধুদের রেফার করে বেশি আয় করুন এবং ফ্রি স্পিন পান।</p>
+            </div>
+            
+            <div class="onboarding-slide" id="slide4">
+                <div class="onboarding-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <h2 class="onboarding-title">উইথড্র করুন</h2>
+                <p class="onboarding-description">আপনার আয় সহজেই উইথড্র করুন। PayPal, Crypto বা মোবাইল রিচার্জ।</p>
+            </div>
+            
+            <div class="onboarding-indicators">
+                <div class="indicator active" onclick="goToSlide(0)"></div>
+                <div class="indicator" onclick="goToSlide(1)"></div>
+                <div class="indicator" onclick="goToSlide(2)"></div>
+                <div class="indicator" onclick="goToSlide(3)"></div>
+            </div>
+            
+            <button class="onboarding-btn" id="nextBtn">পরবর্তী</button>
+            <button class="skip-btn" onclick="skipOnboarding()">স্কিপ করুন</button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="main-app" id="mainApp">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="top-bar">
+                <div class="greeting">
+                    <h1 id="userName">স্বাগতম!</h1>
+                    <p>ভিডিও দেখে আয় শুরু করুন</p>
+                </div>
+                <div class="notification-bell">
+                    <i class="fas fa-bell"></i>
+                </div>
+            </div>
+            
+            <div class="balance-card">
+                <div class="balance-label">
+                    <i class="fas fa-wallet"></i> মোট ব্যালেন্স
+                </div>
+                <div class="balance-amount" id="totalBalance">$0.00</div>
+                <div class="balance-subtext">
+                    <i class="fas fa-play-circle"></i> ভিডিও দেখে আয় করুন
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="quick-stats">
+                <div class="stat-item">
+                    <div class="stat-icon earnings">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="stat-value" id="videosWatched">0</div>
+                    <div class="stat-label">ভিডিও দেখা</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon tasks">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-value" id="completedTasks">0</div>
+                    <div class="stat-label">টাস্ক সম্পন্ন</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon spins">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <div class="stat-value" id="availableSpins">0</div>
+                    <div class="stat-label">স্পিন বাকি</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Home Tab -->
+            <div class="tab-content active" id="homeTab">
+                <!-- Video Income Section -->
+                <div class="video-income-section">
+                    <div class="section-header">
+                        <h2 class="section-title video-title">
+                            <i class="fas fa-play-circle"></i>
+                            ভিডিও দেখে আয় করুন
+                        </h2>
+                    </div>
+                    
+                    <div class="video-grid">
+                        <div class="video-card">
+                            <div class="video-header">
+                                <div class="video-title">শর্ট ভিডিও এড</div>
+                                <div class="video-reward">$0.10</div>
+                            </div>
+                            <div class="video-stats">
+                                <div class="video-stat">
+                                    <i class="fas fa-clock"></i>
+                                    30 সেকেন্ড
+                                </div>
+                                <div class="video-stat">
+                                    <i class="fas fa-play"></i>
+                                    আজ দেখা: 0/10
+                                </div>
+                            </div>
+                            <p class="video-description">সংক্ষিপ্ত ভিডিও বিজ্ঞাপন দেখে দ্রুত আয় করুন</p>
+                            <button class="btn video-btn" onclick="watchVideoAd('short')">
+                                <i class="fas fa-play"></i> ভিডিও দেখুন
+                            </button>
+                        </div>
+                        
+                        <div class="video-card">
+                            <div class="video-header">
+                                <div class="video-title">ফুল লেংথ ভিডিও</div>
+                                <div class="video-reward">$0.25</div>
+                            </div>
+                            <div class="video-stats">
+                                <div class="video-stat">
+                                    <i class="fas fa-clock"></i>
+                                    2 মিনিট
+                                </div>
+                                <div class="video-stat">
+                                    <i class="fas fa-play"></i>
+                                    আজ দেখা: 0/5
+                                </div>
+                            </div>
+                            <p class="video-description">পূর্ণ দৈর্ঘ্যের ভিডিও দেখে বেশি আয় করুন</p>
+                            <button class="btn video-btn" onclick="watchVideoAd('full')">
+                                <i class="fas fa-play"></i> ভিডিও দেখুন
+                            </button>
+                        </div>
+                        
+                        <div class="video-card">
+                            <div class="video-header">
+                                <div class="video-title">গেমিং ভিডিও</div>
+                                <div class="video-reward">$0.15</div>
+                            </div>
+                            <div class="video-stats">
+                                <div class="video-stat">
+                                    <i class="fas fa-clock"></i>
+                                    1 মিনিট
+                                </div>
+                                <div class="video-stat">
+                                    <i class="fas fa-play"></i>
+                                    আজ দেখা: 0/8
+                                </div>
+                            </div>
+                            <p class="video-description">গেমিং ভিডিও দেখে মজার সাথে আয় করুন</p>
+                            <button class="btn video-btn" onclick="watchVideoAd('gaming')">
+                                <i class="fas fa-gamepad"></i> ভিডিও দেখুন
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- রেফার কোড ইনপুট (যদি রেফারার না থাকে) -->
-                <div class="referral-input-section" id="referralInputSection" style="display: none;">
-                    <div class="referral-input-title">রেফার কোড দিন</div>
-                    <div class="referral-input-group">
-                        <input type="text" class="referral-input" id="referralCodeInput" 
-                               placeholder="রেফার কোড লিখুন" maxlength="20">
-                        <button class="apply-button" id="applyReferralButton" onclick="applyReferralCode()">
-                            প্রয়োগ করুন
-                        </button>
+                <!-- Tasks Section -->
+                <div class="tasks-section">
+                    <div class="section-header">
+                        <h2 class="section-title task-title">
+                            <i class="fas fa-tasks"></i>
+                            অন্যান্য টাস্ক
+                        </h2>
                     </div>
-                    <div class="referral-note">
-                        রেফার কোড দিলে ১০০ টাকা বোনাস পাবেন
+                    
+                    <div class="task-grid">
+                        <div class="task-card">
+                            <div class="task-header">
+                                <div class="task-title">Telegram চ্যানেল জয়েন করুন</div>
+                                <div class="task-reward">$0.50</div>
+                            </div>
+                            <p class="task-description">আমাদের অফিসিয়াল চ্যানেলে জয়েন করুন</p>
+                            <button class="btn" onclick="completeTask('channel_join')">
+                                <i class="fas fa-users"></i> টাস্ক শুরু করুন
+                            </button>
+                        </div>
+                        
+                        <div class="task-card">
+                            <div class="task-header">
+                                <div class="task-title">অ্যাপ ইন্সটল করুন</div>
+                                <div class="task-reward">$1.00</div>
+                            </div>
+                            <p class="task-description">স্পন্সর অ্যাপ ডাউনলোড এবং ইন্সটল করুন</p>
+                            <button class="btn" onclick="completeTask('app_install')">
+                                <i class="fas fa-download"></i> টাস্ক শুরু করুন
+                            </button>
+                        </div>
+                        
+                        <div class="task-card">
+                            <div class="task-header">
+                                <div class="task-title">সার্ভে সম্পন্ন করুন</div>
+                                <div class="task-reward">$0.75</div>
+                            </div>
+                            <p class="task-description">সংক্ষিপ্ত সার্ভে সম্পন্ন করে আয় করুন</p>
+                            <button class="btn" onclick="completeTask('survey')">
+                                <i class="fas fa-clipboard-list"></i> টাস্ক শুরু করুন
+                            </button>
+                        </div>
                     </div>
-                </div>
-
-                <p class="onboarding-subtitle">এড দেখে, রেফার করে এবং টাস্ক করে সহজেই আয় করুন</p>
-                
-                <div class="onboarding-steps">
-                    <div class="step-dot active" id="dot1"></div>
-                    <div class="step-dot" id="dot2"></div>
-                    <div class="step-dot" id="dot3"></div>
-                </div>
-                
-                <div class="onboarding-buttons">
-                    <button class="skip-button" onclick="skipReferralStep()">বাদ দিন</button>
-                    <button class="next-button" onclick="nextStep()">পরবর্তী</button>
-                </div>
-            </div>
-
-            <!-- স্টেপ ২ -->
-            <div class="onboarding-step" id="step2">
-                <div class="onboarding-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="2" y="6" width="20" height="12" rx="2"/>
-                        <path d="m10 13-2 2 2 2m4-4 2 2-2 2"/>
-                    </svg>
-                </div>
-                <h1 class="onboarding-title">এড দেখে আয়</h1>
-                <p class="onboarding-subtitle">ভিডিও এড দেখে প্রতি বার ১০-৫০ টাকা আয় করুন</p>
-                
-                <div class="onboarding-steps">
-                    <div class="step-dot" id="dot4"></div>
-                    <div class="step-dot active" id="dot5"></div>
-                    <div class="step-dot" id="dot6"></div>
-                </div>
-                
-                <div class="onboarding-buttons">
-                    <button class="next-button" onclick="nextStep()">পরবর্তী</button>
-                </div>
-            </div>
-
-            <!-- স্টেপ ৩ -->
-            <div class="onboarding-step" id="step3">
-                <div class="onboarding-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2v20m-4-8h8m-8 4h8M6 6h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/>
-                    </svg>
-                </div>
-                <h1 class="onboarding-title">আয় শুরু করুন</h1>
-                <p class="onboarding-subtitle">আপনার আয়ের যাত্রা শুরু হোক এখনই!</p>
-                
-                <div class="onboarding-steps">
-                    <div class="step-dot" id="dot7"></div>
-                    <div class="step-dot" id="dot8"></div>
-                    <div class="step-dot active" id="dot9"></div>
-                </div>
-                
-                <div class="onboarding-buttons">
-                    <button class="start-button" onclick="startApp()">শুরু করুন</button>
                 </div>
             </div>
         </div>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="switchTab('home')">
+                <div class="nav-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="nav-label">হোম</div>
+            </div>
+            <div class="nav-item" onclick="switchTab('spin')">
+                <div class="nav-icon">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <div class="nav-label">স্পিন</div>
+            </div>
+            <div class="nav-item" onclick="switchTab('referral')">
+                <div class="nav-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="nav-label">রেফার</div>
+            </div>
+            <div class="nav-item" onclick="switchTab('withdraw')">
+                <div class="nav-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="nav-label">উইথড্র</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <div class="notification-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        <div class="notification-message">অপারেশন সফল হয়েছে!</div>
     </div>
 
-    <!-- মেইন অ্যাপ -->
-    <div class="app-container" id="appContainer">
-        <!-- হোম স্ক্রিন -->
-        <div class="screen active" id="homeScreen">
-            <!-- হেডার -->
-            <div class="header">
-                <div class="logo">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2v20m-4-8h8m-8 4h8M6 6h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/>
-                    </svg>
-                </div>
-                <h1 class="app-title" id="userWelcome">আয় করুন</h1>
-                <p id="userSubtitle">এড দেখে, রেফার করে এবং টাস্ক করে আয় করুন</p>
-            </div>
+    <script>
+        // Onboarding functionality
+        let currentSlide = 0;
+        const totalSlides = 4;
+        const onboarding = document.getElementById('onboarding');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+        const indicators = document.querySelectorAll('.indicator');
+        const mainApp = document.getElementById('mainApp');
+        
+        // Initialize onboarding
+        function initOnboarding() {
+            // Always show onboarding first
+            onboarding.style.display = 'flex';
+            mainApp.style.display = 'none';
+            updateOnboarding();
+        }
+        
+        // Update onboarding screen
+        function updateOnboarding() {
+            // Hide all slides
+            document.querySelectorAll('.onboarding-slide').forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // Show current slide
+            const currentSlideElement = document.getElementById(`slide${currentSlide + 1}`);
+            if (currentSlideElement) {
+                currentSlideElement.classList.add('active');
+            }
+            
+            // Update indicators
+            indicators.forEach((indicator, index) => {
+                if (index === currentSlide) {
+                    indicator.classList.add('active');
+                } else {
+                    indicator.classList.remove('active');
+                }
+            });
+            
+            // Update progress bar
+            progressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+            
+            // Update button text - FIXED: Proper text update
+            if (currentSlide === totalSlides - 1) {
+                nextBtn.textContent = 'শুরু করুন';
+            } else {
+                nextBtn.textContent = 'পরবর্তী';
+            }
+        }
+        
+        // Go to specific slide
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            updateOnboarding();
+        }
+        
+        // Next button click handler - FIXED: Proper functionality
+        nextBtn.addEventListener('click', function() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateOnboarding();
+            } else {
+                // Start the app
+                startApp();
+            }
+        });
+        
+        // Skip onboarding
+        function skipOnboarding() {
+            startApp();
+        }
+        
+        // Start the main app
+        function startApp() {
+            onboarding.style.display = 'none';
+            mainApp.style.display = 'flex';
+            mainApp.classList.add('active');
+        }
 
-            <!-- ব্যালেন্স -->
-            <div class="balance-card">
-                <div class="balance-label">আপনার ব্যালেন্স</div>
-                <div class="balance-amount" id="balanceAmount">০ টাকা</div>
-            </div>
-
-            <!-- আয়ের অপশনস -->
-            <div class="earn-options">
-                <!-- এড দেখে আয় -->
-                <div class="earn-card watch-ads">
-                    <div class="earn-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="6" width="20" height="12" rx="2"/>
-                            <path d="m10 13-2 2 2 2m4-4 2 2-2 2"/>
-                        </svg>
-                    </div>
-                    <div class="earn-content">
-                        <div class="earn-title">এড দেখুন</div>
-                        <div class="earn-desc">ভিডিও এড দেখে আয় করুন</div>
-                        <div class="earn-amount">১০-৫০ টাকা প্রতি এ
+        // User data storage
+        let userData = {
+            id: 1,
+            name: "ইউজার",
+            balance: 0.00,
+            videosWatched: 0,
+            todayVideos: 0,
+            totalEarned: 0.00,
+            tasksCompleted: 0,
+            availableSpins: 0
+        };
+        
+        // Check if Telegram WebApp is available
+        function initTelegram() {
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.ready();
+                const user = Telegram.WebApp.initDataUnsafe.user;
+                
+                if (user) {
+                    userData.name = user.first_name || "ইউজার";
+                    userData.id = user.id;
+                    document.getElementById('userName').textContent = user.first_name + "!";
+                }
+                
+                loadUserData();
+                updateUI();
+            }
+        }
+        
+        // Load user data from localStorage
+        function loadUserData() {
+            const savedData = localStorage.getItem('telegramEarningBot');
+            if (savedData) {
+                const parsedData = JSON.parse(savedData);
+                if (parsedData.id === userData.id) {
+                    userData = {...userData, ...parsedData};
+                }
+            }
+        }
+        
+        // Save user data to localStorage
+        function saveUserData() {
+            localStorage.setItem('telegramEarningBot', JSON.stringify(userData));
+        }
+        
+        // Update UI with current user data
+        function updateUI() {
+            document.getElementById('totalBalance').textContent = `$${userData.balance.toFixed(2)}`;
+            document.getElementById('videosWatched').textContent = userData.videosWatched;
+            document.getElementById('completedTasks').textContent = userData.tasksCompleted;
+            document.getElementById('availableSpins').textContent = userData.availableSpins;
+        }
+        
+        // Watch video ad function
+        function watchVideoAd(type) {
+            let reward = 0;
+            let duration = "";
+            
+            switch(type) {
+                case 'short':
+                    reward = 0.10;
+                    duration = "30 সেকেন্ড";
+                    break;
+                case 'full':
+                    reward = 0.25;
+                    duration = "2 মিনিট";
+                    break;
+                case 'gaming':
+                    reward = 0.15;
+                    duration = "1 মিনিট";
+                    break;
+            }
+            
+            showNotification(`${duration} ভিডিও লোড হচ্ছে...`);
+            
+            setTimeout(() => {
+                userData.balance += reward;
+                userData.totalEarned += reward;
+                userData.videosWatched++;
+                userData.todayVideos++;
+                saveUserData();
+                updateUI();
+                showNotification(`সফল! $${reward.toFixed(2)} যোগ হয়েছে`);
+            }, 3000);
+        }
+        
+        // Complete task function
+        function completeTask(taskType) {
+            let reward = 0;
+            let taskName = "";
+            
+            switch(taskType) {
+                case 'channel_join':
+                    reward = 0.50;
+                    taskName = "চ্যানেল জয়েন";
+                    break;
+                case 'app_install':
+                    reward = 1.00;
+                    taskName = "অ্যাপ ইন্সটল";
+                    break;
+                case 'survey':
+                    reward = 0.75;
+                    taskName = "সার্ভে";
+                    break;
+            }
+            
+            showNotification(`${taskName} টাস্ক শুরু হয়েছে...`);
+            
+            setTimeout(() => {
+                userData.balance += reward;
+                userData.totalEarned += reward;
+                userData.tasksCompleted++;
+                saveUserData();
+                updateUI();
+                showNotification(`সফল! $${reward.toFixed(2)} যোগ হয়েছে`);
+            }, 2000);
+        }
+        
+        // Switch between tabs
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.querySelector('.notification-message').textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Initialize the app
+        window.onload = function() {
+            initOnboarding();
+            initTelegram();
+        };
+    </script>
+</body>
+</html>
