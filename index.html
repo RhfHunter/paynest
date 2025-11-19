@@ -3,1391 +3,613 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram আর্নিং বট</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Telegram Earning Bot</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --primary-light: #8b5cf6;
-            --secondary: #f59e0b;
-            --accent: #10b981;
-            --success: #22c55e;
-            --warning: #f59e0b;
-            --background: #ffffff;
-            --surface: #f8fafc;
-            --card: #ffffff;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --border: #e2e8f0;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            --gradient-accent: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            --video-gradient: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-        }
-        
-        body {
-            background: var(--background);
-            color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
-            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
-        /* Classic Onboarding Design */
-        .onboarding {
+        body {
+            background: #0F0F1A;
+            color: #FFFFFF;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Professional Loading Screen */
+        .pro-loading-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            z-index: 1000;
+            background: linear-gradient(135deg, #0F0F1A 0%, #1A1A2E 50%, #16213E 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-        }
-
-        .onboarding.hidden {
-            display: none;
-        }
-
-        .onboarding-container {
-            background: white;
-            border-radius: 25px;
-            padding: 40px 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            position: relative;
+            z-index: 1000;
             overflow: hidden;
         }
 
-        .onboarding-container::before {
-            content: '';
+        /* Animated Background Elements */
+        .bg-grid {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            height: 6px;
-            background: var(--gradient-primary);
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
         }
 
-        .onboarding-slide {
-            display: none;
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
         }
 
-        .onboarding-slide.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            opacity: 0.08;
+            filter: blur(50px);
+            animation: float 12s ease-in-out infinite;
         }
 
-        .onboarding-icon {
-            width: 100px;
-            height: 100px;
-            background: var(--gradient-primary);
-            border-radius: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 30px;
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        .shape:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            top: 5%;
+            left: 5%;
+            animation-delay: 0s;
         }
 
-        .onboarding-icon i {
-            font-size: 45px;
-            color: white;
+        .shape:nth-child(2) {
+            width: 300px;
+            height: 300px;
+            top: 65%;
+            right: 8%;
+            animation-delay: -4s;
+            background: linear-gradient(45deg, #45B7D1, #96E6A1);
         }
 
-        .onboarding-title {
+        .shape:nth-child(3) {
+            width: 350px;
+            height: 350px;
+            bottom: 15%;
+            left: 15%;
+            animation-delay: -8s;
+            background: linear-gradient(45deg, #FCE38A, #F38181);
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+            33% { 
+                transform: translateY(-40px) rotate(120deg) scale(1.1);
+            }
+            66% { 
+                transform: translateY(20px) rotate(240deg) scale(0.9);
+            }
+        }
+
+        /* Connection Lines */
+        .connection-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
+            height: 1px;
+            animation: lineFlow 6s linear infinite;
+        }
+
+        .line:nth-child(1) {
+            top: 30%;
+            left: -100px;
+            width: 200px;
+            animation-delay: 0s;
+        }
+
+        .line:nth-child(2) {
+            top: 60%;
+            right: -100px;
+            width: 180px;
+            animation-delay: -2s;
+        }
+
+        .line:nth-child(3) {
+            bottom: 40%;
+            left: -120px;
+            width: 220px;
+            animation-delay: -4s;
+        }
+
+        @keyframes lineFlow {
+            0% { transform: translateX(-100px); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(calc(100vw + 100px)); opacity: 0; }
+        }
+
+        /* Main Content Container */
+        .pro-container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            padding: 40px 0;
+        }
+
+        /* Profile Section - Enhanced */
+        .pro-profile {
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .pro-avatar-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 25px;
+        }
+
+        .pro-avatar-glow {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #4ECDC4 100%);
+            border-radius: 50%;
+            filter: blur(15px);
+            opacity: 0.6;
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        .pro-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.15);
+            padding: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .pro-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #1A1A2E;
+        }
+
+        .pro-user-info {
+            margin-bottom: 15px;
+        }
+
+        .pro-user-name {
             font-size: 26px;
             font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 15px;
-            line-height: 1.3;
+            margin-bottom: 8px;
+            color: #FFFFFF;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
-        .onboarding-description {
-            color: var(--text-secondary);
-            line-height: 1.6;
+        .pro-user-username {
+            font-size: 16px;
+            color: #A8B1FF;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* Progress Section - Enhanced */
+        .pro-progress-section {
             margin-bottom: 40px;
-            font-size: 16px;
         }
 
-        .onboarding-indicators {
+        .pro-steps {
             display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-
-        .indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--border);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .indicator.active {
-            background: var(--primary);
-            transform: scale(1.2);
-        }
-
-        .onboarding-btn {
-            background: var(--gradient-primary);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
-            width: 100%;
-            max-width: 250px;
-            margin: 0 auto;
-            display: block;
-        }
-
-        .onboarding-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.5);
-        }
-
-        .onboarding-progress {
-            width: 200px;
-            height: 4px;
-            background: var(--border);
-            border-radius: 2px;
-            margin: 0 auto 30px;
-            overflow: hidden;
-        }
-
-        .onboarding-progress-bar {
-            height: 100%;
-            background: var(--gradient-primary);
-            border-radius: 2px;
-            transition: width 0.5s ease;
-            width: 0%;
-        }
-
-        /* Main App */
-        .main-app {
-            min-height: 100vh;
-            background: var(--surface);
-            display: none;
-            flex-direction: column;
-        }
-
-        .main-app.active {
-            display: flex;
-        }
-
-        /* Header Design with Profile */
-        .header {
-            background: var(--card);
-            padding: 20px 20px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            border-radius: 0 0 25px 25px;
-        }
-
-        .profile-section {
-            display: flex;
-            align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            position: relative;
+            padding: 0 20px;
         }
 
-        .profile-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        .pro-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50px;
+            right: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                rgba(102, 126, 234, 0.3) 0%, 
+                rgba(102, 126, 234, 0.6) 50%, 
+                rgba(102, 126, 234, 0.3) 100%);
+            z-index: 1;
+            border-radius: 2px;
         }
 
-        .profile-avatar {
-            width: 60px;
-            height: 60px;
+        .pro-step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .pro-step-dot {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: var(--gradient-primary);
+            background: rgba(255,255,255,0.08);
+            margin: 0 auto 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-            border: 3px solid white;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-            overflow: hidden;
-        }
-
-        .profile-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .user-details h2 {
-            margin: 0;
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .user-details p {
-            margin: 5px 0 0;
-            color: var(--text-secondary);
+            border: 2px solid rgba(255,255,255,0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            font-weight: 600;
             font-size: 14px;
+            color: rgba(255,255,255,0.6);
         }
 
-        .notification-bell {
-            width: 45px;
-            height: 45px;
-            background: var(--surface);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 1px solid var(--border);
-        }
-
-        .notification-bell:hover {
-            background: var(--primary);
-            color: white;
+        .pro-step.active .pro-step-dot {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
+            color: #FFFFFF;
             transform: scale(1.1);
         }
 
-        /* Balance Card Design */
-        .balance-section {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border-radius: 20px;
-            padding: 25px;
-            color: white;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
+        .pro-step.completed .pro-step-dot {
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+            border-color: rgba(78, 205, 196, 0.5);
+            box-shadow: 0 0 25px rgba(78, 205, 196, 0.4);
         }
 
-        .balance-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50%;
+        .pro-step.completed .pro-step-dot::before {
+            content: '✓';
+            color: #FFFFFF;
+            font-weight: bold;
+            font-size: 16px;
         }
 
-        .balance-section::after {
-            content: '';
-            position: absolute;
-            bottom: -30%;
-            left: -10%;
-            width: 150px;
-            height: 150px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 50%;
-        }
-
-        .balance-label {
-            font-size: 14px;
-            opacity: 0.8;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            z-index: 2;
-            position: relative;
-        }
-
-        .balance-amount {
-            font-size: 42px;
-            font-weight: 800;
-            margin: 15px 0;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            z-index: 2;
-            position: relative;
-            letter-spacing: 1px;
-        }
-
-        .balance-subtext {
+        .pro-step-text {
             font-size: 13px;
-            opacity: 0.7;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            z-index: 2;
-            position: relative;
-        }
-
-        .balance-icon {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 60px;
-            opacity: 0.1;
-            z-index: 1;
-        }
-
-        /* Video Income Section */
-        .video-income-section {
-            background: var(--card);
-            margin: 20px;
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-title.video-title::before {
-            content: '';
-            width: 4px;
-            height: 20px;
-            background: var(--video-gradient);
-            border-radius: 2px;
-        }
-
-        .video-grid {
-            display: grid;
-            gap: 15px;
-        }
-
-        .video-card {
-            background: var(--surface);
-            border-radius: 15px;
-            padding: 20px;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .video-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--video-gradient);
-        }
-
-        .video-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.2);
-            border-color: #ff6b6b;
-        }
-
-        .video-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-
-        .video-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 16px;
-            flex: 1;
-        }
-
-        .video-reward {
-            color: #ff6b6b;
-            font-weight: bold;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(255, 107, 107, 0.1);
-            padding: 6px 12px;
-            border-radius: 10px;
-        }
-
-        .video-description {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-
-        .video-stats {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .video-stat {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: var(--text-secondary);
-            font-size: 12px;
-        }
-
-        .btn {
-            background: var(--gradient-primary);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            width: 100%;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn.video-btn {
-            background: var(--video-gradient);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
-        }
-
-        .btn.video-btn:hover {
-            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
-        }
-
-        /* Tasks Section */
-        .tasks-section {
-            background: var(--card);
-            margin: 20px;
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-        }
-
-        .section-title.task-title::before {
-            content: '';
-            width: 4px;
-            height: 20px;
-            background: var(--gradient-accent);
-            border-radius: 2px;
-        }
-
-        .task-grid {
-            display: grid;
-            gap: 15px;
-        }
-
-        .task-card {
-            background: var(--surface);
-            border-radius: 15px;
-            padding: 20px;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .task-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--gradient-accent);
-        }
-
-        .task-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
-            border-color: #10b981;
-        }
-
-        .task-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-
-        .task-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 16px;
-            flex: 1;
-        }
-
-        .task-reward {
-            color: var(--accent);
-            font-weight: bold;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(16, 185, 129, 0.1);
-            padding: 6px 12px;
-            border-radius: 10px;
-        }
-
-        .task-description {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-
-        /* Quick Stats */
-        .quick-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 20px;
-        }
-
-        .stat-item {
-            background: var(--card);
-            padding: 15px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--surface);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 10px;
-            font-size: 18px;
-        }
-
-        .stat-icon.earnings { color: #10b981; }
-        .stat-icon.tasks { color: #f59e0b; }
-        .stat-icon.spins { color: #6366f1; }
-
-        .stat-value {
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--text-primary);
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            padding-bottom: 80px;
-            background: var(--surface);
-        }
-
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Bottom Navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: var(--card);
-            display: flex;
-            justify-content: space-around;
-            padding: 15px 0;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
-            z-index: 100;
-            border-top: 1px solid var(--border);
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 8px 12px;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: var(--text-secondary);
-            flex: 1;
-            text-align: center;
-            position: relative;
-        }
-
-        .nav-item.active {
-            color: var(--primary);
-            background: rgba(99, 102, 241, 0.1);
-        }
-
-        .nav-item.active::before {
-            content: '';
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
-            height: 4px;
-            background: var(--primary);
-            border-radius: 50%;
-        }
-
-        .nav-icon {
-            font-size: 20px;
-            margin-bottom: 4px;
-            transition: all 0.3s;
-        }
-
-        .nav-item.active .nav-icon {
-            transform: scale(1.2);
-        }
-
-        .nav-label {
-            font-size: 11px;
+            color: rgba(255,255,255,0.5);
             font-weight: 500;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            letter-spacing: 0.3px;
         }
 
-        /* Notification */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--card);
-            color: var(--text-primary);
-            padding: 16px 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            transform: translateX(150%);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1000;
-            max-width: 300px;
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .pro-step.active .pro-step-text {
+            color: #A8B1FF;
+            font-weight: 600;
         }
 
-        .notification.show {
-            transform: translateX(0);
+        .pro-step.completed .pro-step-text {
+            color: #4ECDC4;
         }
 
-        .notification-icon {
-            width: 24px;
-            height: 24px;
-            background: var(--gradient-accent);
+        /* Progress Bar - Enhanced */
+        .pro-progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .pro-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #667eea, #764ba2, #4ECDC4);
+            border-radius: 4px;
+            animation: pro-progress 8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pro-progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            animation: pro-shimmer 2.5s infinite;
+        }
+
+        @keyframes pro-progress {
+            0% { width: 0%; }
+            20% { width: 25%; }
+            40% { width: 50%; }
+            60% { width: 75%; }
+            80% { width: 90%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes pro-shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(400%); }
+        }
+
+        /* Loading Message - Enhanced */
+        .pro-message-container {
+            position: relative;
+            min-height: 24px;
+            margin-bottom: 10px;
+        }
+
+        .pro-message {
+            font-size: 15px;
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .pro-submessage {
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 4px;
+        }
+
+        /* Status Bar - Enhanced */
+        .pro-status {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 0.5px;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: #4ECDC4;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 12px;
+            margin-right: 8px;
+            animation: statusPulse 2s infinite;
         }
 
-        /* Debug Info */
-        .debug-info {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            z-index: 9999;
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Main App (Hidden Initially) */
+        .main-app {
             display: none;
         }
     </style>
 </head>
 <body>
-    <!-- Debug Info -->
-    <div class="debug-info" id="debugInfo"></div>
-
-    <!-- Classic Onboarding Screen -->
-    <div class="onboarding" id="onboarding">
-        <div class="onboarding-container">
-            <div class="onboarding-progress">
-                <div class="onboarding-progress-bar" id="progressBar"></div>
-            </div>
-            
-            <div class="onboarding-slide active" id="slide1">
-                <div class="onboarding-icon">
-                    <i class="fas fa-play-circle"></i>
+    <!-- Professional Loading Screen -->
+    <div class="pro-loading-screen" id="loadingScreen">
+        <div class="bg-grid"></div>
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+        <div class="connection-lines">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+        
+        <div class="pro-container">
+            <!-- Profile - Enhanced -->
+            <div class="pro-profile">
+                <div class="pro-avatar-container">
+                    <div class="pro-avatar-glow"></div>
+                    <div class="pro-avatar">
+                        <img id="profilePic" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="Profile">
+                    </div>
                 </div>
-                <h2 class="onboarding-title">ভিডিও দেখে আয় করুন</h2>
-                <p class="onboarding-description">প্রতিদিন ভিডিও দেখে সহজেই আয় করুন। আমাদের মেইন ইনকাম সোর্স ভিডিও এড ভিউিং সিস্টেম।</p>
-            </div>
-            
-            <div class="onboarding-slide" id="slide2">
-                <div class="onboarding-icon">
-                    <i class="fas fa-tasks"></i>
+                <div class="pro-user-info">
+                    <div class="pro-user-name" id="userName">Initializing...</div>
+                    <div class="pro-user-username" id="userUsername">@username</div>
                 </div>
-                <h2 class="onboarding-title">বিভিন্ন টাস্ক</h2>
-                <p class="onboarding-description">ভিডিও ছাড়াও অন্যান্য টাস্ক সম্পন্ন করে অতিরিক্ত আয় করুন।</p>
             </div>
             
-            <div class="onboarding-slide" id="slide3">
-                <div class="onboarding-icon">
-                    <i class="fas fa-users"></i>
+            <!-- Progress - Enhanced -->
+            <div class="pro-progress-section">
+                <div class="pro-steps">
+                    <div class="pro-step active" id="step1">
+                        <div class="pro-step-dot">1</div>
+                        <div class="pro-step-text">Authentication</div>
+                    </div>
+                    <div class="pro-step" id="step2">
+                        <div class="pro-step-dot">2</div>
+                        <div class="pro-step-text">Data Sync</div>
+                    </div>
+                    <div class="pro-step" id="step3">
+                        <div class="pro-step-dot">3</div>
+                        <div class="pro-step-text">Tasks Ready</div>
+                    </div>
+                    <div class="pro-step" id="step4">
+                        <div class="pro-step-dot">4</div>
+                        <div class="pro-step-text">Complete</div>
+                    </div>
                 </div>
-                <h2 class="onboarding-title">বন্ধুদের রেফার করুন</h2>
-                <p class="onboarding-description">বন্ধুদের রেফার করে বেশি আয় করুন এবং ফ্রি স্পিন পান।</p>
-            </div>
-            
-            <div class="onboarding-slide" id="slide4">
-                <div class="onboarding-icon">
-                    <i class="fas fa-wallet"></i>
+                
+                <div class="pro-progress-container">
+                    <div class="pro-progress-bar"></div>
                 </div>
-                <h2 class="onboarding-title">উইথড্র করুন</h2>
-                <p class="onboarding-description">আপনার আয় সহজেই উইথড্র করুন। PayPal, Crypto বা মোবাইল রিচার্জ।</p>
+                
+                <div class="pro-message-container">
+                    <div class="pro-message" id="loadingMessage">
+                        Initializing your earning dashboard...
+                    </div>
+                    <div class="pro-submessage" id="subMessage">
+                        Securing your connection
+                    </div>
+                </div>
             </div>
-            
-            <div class="onboarding-indicators">
-                <div class="indicator active" onclick="goToSlide(0)"></div>
-                <div class="indicator" onclick="goToSlide(1)"></div>
-                <div class="indicator" onclick="goToSlide(2)"></div>
-                <div class="indicator" onclick="goToSlide(3)"></div>
-            </div>
-            
-            <button class="onboarding-btn" id="nextBtn">পরবর্তী</button>
+        </div>
+        
+        <div class="pro-status">
+            <span class="status-dot"></span>
+            Secured Connection • v2.1.4 • Premium
         </div>
     </div>
 
-    <!-- Main App -->
+    <!-- Main App Content -->
     <div class="main-app" id="mainApp">
-        <!-- Header Section with Profile -->
-        <div class="header">
-            <div class="profile-section">
-                <div class="profile-info">
-                    <div class="profile-avatar" id="userAvatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="user-details">
-                        <h2 id="userName">স্বাগতম!</h2>
-                        <p id="userWelcome">ভিডিও দেখে আয় শুরু করুন</p>
-                    </div>
-                </div>
-                <div class="notification-bell">
-                    <i class="fas fa-bell"></i>
-                </div>
-            </div>
-            
-            <!-- Balance Card Design -->
-            <div class="balance-section">
-                <div class="balance-label">
-                    <i class="fas fa-wallet"></i> মোট ব্যালেন্স
-                </div>
-                <div class="balance-amount" id="totalBalance">$0.00</div>
-                <div class="balance-subtext">
-                    <i class="fas fa-play-circle"></i> ভিডিও দেখে আয় করুন
-                </div>
-                <div class="balance-icon">
-                    <i class="fas fa-coins"></i>
-                </div>
-            </div>
-
-            <!-- Quick Stats -->
-            <div class="quick-stats">
-                <div class="stat-item">
-                    <div class="stat-icon earnings">
-                        <i class="fas fa-play-circle"></i>
-                    </div>
-                    <div class="stat-value" id="videosWatched">0</div>
-                    <div class="stat-label">ভিডিও দেখা</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-icon tasks">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="stat-value" id="completedTasks">0</div>
-                    <div class="stat-label">টাস্ক সম্পন্ন</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-icon spins">
-                        <i class="fas fa-sync-alt"></i>
-                    </div>
-                    <div class="stat-value" id="availableSpins">0</div>
-                    <div class="stat-label">স্পিন বাকি</div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Home Tab -->
-            <div class="tab-content active" id="homeTab">
-                <!-- Video Income Section -->
-                <div class="video-income-section">
-                    <div class="section-header">
-                        <h2 class="section-title video-title">
-                            <i class="fas fa-play-circle"></i>
-                            ভিডিও দেখে আয় করুন
-                        </h2>
-                    </div>
-                    
-                    <div class="video-grid">
-                        <div class="video-card">
-                            <div class="video-header">
-                                <div class="video-title">শর্ট ভিডিও এড</div>
-                                <div class="video-reward">$0.10</div>
-                            </div>
-                            <div class="video-stats">
-                                <div class="video-stat">
-                                    <i class="fas fa-clock"></i>
-                                    30 সেকেন্ড
-                                </div>
-                                <div class="video-stat">
-                                    <i class="fas fa-play"></i>
-                                    আজ দেখা: <span id="todayShort">0</span>/10
-                                </div>
-                            </div>
-                            <p class="video-description">সংক্ষিপ্ত ভিডিও বিজ্ঞাপন দেখে দ্রুত আয় করুন</p>
-                            <button class="btn video-btn" onclick="watchVideoAd('short')">
-                                <i class="fas fa-play"></i> ভিডিও দেখুন
-                            </button>
-                        </div>
-                        
-                        <div class="video-card">
-                            <div class="video-header">
-                                <div class="video-title">ফুল লেংথ ভিডিও</div>
-                                <div class="video-reward">$0.25</div>
-                            </div>
-                            <div class="video-stats">
-                                <div class="video-stat">
-                                    <i class="fas fa-clock"></i>
-                                    2 মিনিট
-                                </div>
-                                <div class="video-stat">
-                                    <i class="fas fa-play"></i>
-                                    আজ দেখা: <span id="todayFull">0</span>/5
-                                </div>
-                            </div>
-                            <p class="video-description">পূর্ণ দৈর্ঘ্যের ভিডিও দেখে বেশি আয় করুন</p>
-                            <button class="btn video-btn" onclick="watchVideoAd('full')">
-                                <i class="fas fa-play"></i> ভিডিও দেখুন
-                            </button>
-                        </div>
-                        
-                        <div class="video-card">
-                            <div class="video-header">
-                                <div class="video-title">গেমিং ভিডিও</div>
-                                <div class="video-reward">$0.15</div>
-                            </div>
-                            <div class="video-stats">
-                                <div class="video-stat">
-                                    <i class="fas fa-clock"></i>
-                                    1 মিনিট
-                                </div>
-                                <div class="video-stat">
-                                    <i class="fas fa-play"></i>
-                                    আজ দেখা: <span id="todayGaming">0</span>/8
-                                </div>
-                            </div>
-                            <p class="video-description">গেমিং ভিডিও দেখে মজার সাথে আয় করুন</p>
-                            <button class="btn video-btn" onclick="watchVideoAd('gaming')">
-                                <i class="fas fa-gamepad"></i> ভিডিও দেখুন
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tasks Section -->
-                <div class="tasks-section">
-                    <div class="section-header">
-                        <h2 class="section-title task-title">
-                            <i class="fas fa-tasks"></i>
-                            অন্যান্য টাস্ক
-                        </h2>
-                    </div>
-                    
-                    <div class="task-grid">
-                        <div class="task-card">
-                            <div class="task-header">
-                                <div class="task-title">Telegram চ্যানেল জয়েন করুন</div>
-                                <div class="task-reward">$0.50</div>
-                            </div>
-                            <p class="task-description">আমাদের অফিসিয়াল চ্যানেলে জয়েন করুন</p>
-                            <button class="btn" onclick="completeTask('channel_join')">
-                                <i class="fas fa-users"></i> টাস্ক শুরু করুন
-                            </button>
-                        </div>
-                        
-                        <div class="task-card">
-                            <div class="task-header">
-                                <div class="task-title">অ্যাপ ইন্সটল করুন</div>
-                                <div class="task-reward">$1.00</div>
-                            </div>
-                            <p class="task-description">স্পন্সর অ্যাপ ডাউনলোড এবং ইন্সটল করুন</p>
-                            <button class="btn" onclick="completeTask('app_install')">
-                                <i class="fas fa-download"></i> টাস্ক শুরু করুন
-                            </button>
-                        </div>
-                        
-                        <div class="task-card">
-                            <div class="task-header">
-                                <div class="task-title">সার্ভে সম্পন্ন করুন</div>
-                                <div class="task-reward">$0.75</div>
-                            </div>
-                            <p class="task-description">সংক্ষিপ্ত সার্ভে সম্পন্ন করে আয় করুন</p>
-                            <button class="btn" onclick="completeTask('survey')">
-                                <i class="fas fa-clipboard-list"></i> টাস্ক শুরু করুন
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Bottom Navigation -->
-        <div class="bottom-nav">
-            <div class="nav-item active" onclick="switchTab('home')">
-                <div class="nav-icon">
-                    <i class="fas fa-home"></i>
-                </div>
-                <div class="nav-label">হোম</div>
-            </div>
-            <div class="nav-item" onclick="switchTab('spin')">
-                <div class="nav-icon">
-                    <i class="fas fa-sync-alt"></i>
-                </div>
-                <div class="nav-label">স্পিন</div>
-            </div>
-            <div class="nav-item" onclick="switchTab('referral')">
-                <div class="nav-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="nav-label">রেফার</div>
-            </div>
-            <div class="nav-item" onclick="switchTab('withdraw')">
-                <div class="nav-icon">
-                    <i class="fas fa-wallet"></i>
-                </div>
-                <div class="nav-label">উইথড্র</div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Notification -->
-    <div class="notification" id="notification">
-        <div class="notification-icon">
-            <i class="fas fa-check"></i>
-        </div>
-        <div class="notification-message">অপারেশন সফল হয়েছে!</div>
+        <!-- Your main app content here -->
     </div>
 
     <script>
-        // Onboarding functionality
-        let currentSlide = 0;
-        const totalSlides = 4;
-        const onboarding = document.getElementById('onboarding');
-        const nextBtn = document.getElementById('nextBtn');
-        const progressBar = document.getElementById('progressBar');
-        const indicators = document.querySelectorAll('.indicator');
-        const mainApp = document.getElementById('mainApp');
-        const debugInfo = document.getElementById('debugInfo');
+        // Telegram Web App Initialization
+        const tg = window.Telegram.WebApp;
         
-        // User data storage with Telegram ID
-        let userData = {
-            telegramId: null,
-            name: "ইউজার",
-            profilePhoto: null,
-            balance: 0.00,
-            videosWatched: 0,
-            todayShort: 0,
-            todayFull: 0,
-            todayGaming: 0,
-            totalEarned: 0.00,
-            tasksCompleted: 0,
-            availableSpins: 0,
-            joinDate: new Date().toISOString(),
-            lastSave: null
-        };
+        let currentStep = 1;
+        const subMessages = [
+            "Verifying your identity...",
+            "Loading your balance...",
+            "Preparing earning tasks...",
+            "Optimizing performance...",
+            "Almost ready..."
+        ];
         
-        // Initialize onboarding
-        function initOnboarding() {
-            // Always show onboarding first
-            onboarding.style.display = 'flex';
-            mainApp.style.display = 'none';
-            updateOnboarding();
-        }
-        
-        // Update onboarding screen
-        function updateOnboarding() {
-            document.querySelectorAll('.onboarding-slide').forEach(slide => {
-                slide.classList.remove('active');
-            });
-            
-            const currentSlideElement = document.getElementById(`slide${currentSlide + 1}`);
-            if (currentSlideElement) {
-                currentSlideElement.classList.add('active');
-            }
-            
-            indicators.forEach((indicator, index) => {
-                if (index === currentSlide) {
-                    indicator.classList.add('active');
-                } else {
-                    indicator.classList.remove('active');
-                }
-            });
-            
-            progressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
-            
-            if (currentSlide === totalSlides - 1) {
-                nextBtn.textContent = 'শুরু করুন';
-            } else {
-                nextBtn.textContent = 'পরবর্তী';
-            }
-        }
-        
-        // Go to specific slide
-        function goToSlide(slideIndex) {
-            currentSlide = slideIndex;
-            updateOnboarding();
-        }
-        
-        // Next button click handler
-        nextBtn.addEventListener('click', function() {
-            if (currentSlide < totalSlides - 1) {
-                currentSlide++;
-                updateOnboarding();
-            } else {
-                startApp();
-            }
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
         });
         
-        // Start the main app
-        function startApp() {
-            onboarding.style.display = 'none';
-            mainApp.style.display = 'flex';
-            mainApp.classList.add('active');
-        }
-
-        // Initialize Telegram WebApp
-        function initTelegram() {
-            console.log('Initializing Telegram WebApp...');
+        function initializeApp() {
+            tg.expand();
+            tg.enableClosingConfirmation();
             
-            if (window.Telegram && Telegram.WebApp) {
-                Telegram.WebApp.ready();
-                console.log('Telegram WebApp is ready');
-                
-                const user = Telegram.WebApp.initDataUnsafe.user;
-                console.log('Telegram User:', user);
-                
+            // Start loading sequence
+            startLoadingSequence();
+        }
+        
+        function startLoadingSequence() {
+            // Step 1: User Authentication
+            updateStep(1, 'Authenticating your account', subMessages[0]);
+            
+            setTimeout(() => {
+                // Set user info from Telegram
+                const user = tg.initDataUnsafe.user;
                 if (user) {
-                    userData.telegramId = user.id;
-                    userData.name = user.first_name || "ইউজার";
-                    userData.profilePhoto = user.photo_url;
+                    document.getElementById('userName').textContent = user.first_name || 'User';
+                    document.getElementById('userUsername').textContent = user.username ? '@' + user.username : '@user';
                     
-                    updateUserProfile();
-                    loadUserData();
-                } else {
-                    userData.telegramId = 'demo_user_' + Date.now();
-                    updateUserProfile();
-                    loadUserData();
+                    if (user.photo_url) {
+                        document.getElementById('profilePic').src = user.photo_url;
+                    }
                 }
                 
-                updateUI();
-                updateDebugInfo('Telegram WebApp initialized');
-            } else {
-                console.log('Running in non-Telegram environment');
-                userData.telegramId = 'demo_user_' + Date.now();
-                updateUserProfile();
-                loadUserData();
-                updateUI();
-                updateDebugInfo('Non-Telegram environment');
-            }
-        }
-        
-        // Update user profile in UI
-        function updateUserProfile() {
-            const userNameElement = document.getElementById('userName');
-            const userWelcomeElement = document.getElementById('userWelcome');
-            const userAvatarElement = document.getElementById('userAvatar');
-            
-            userNameElement.textContent = userData.name;
-            userWelcomeElement.textContent = "ভিডিও দেখে আয় শুরু করুন";
-            
-            if (userData.profilePhoto) {
-                userAvatarElement.innerHTML = `<img src="${userData.profilePhoto}" alt="${userData.name}" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\\'fas fa-user\\'></i>'">`;
-            } else {
-                userAvatarElement.innerHTML = `<i class="fas fa-user"></i>`;
-            }
-        }
-        
-        // Load user data
-        function loadUserData() {
-            if (!userData.telegramId) {
-                console.error('No Telegram ID found');
-                return;
-            }
-            
-            const storageKey = `telegram_earning_bot_${userData.telegramId}`;
-            console.log('Loading data with key:', storageKey);
-            
-            try {
-                const savedData = localStorage.getItem(storageKey);
-                console.log('Saved data from localStorage:', savedData);
+                // Step 2: Data Sync
+                updateStep(2, 'Synchronizing your data', subMessages[1]);
                 
-                if (savedData) {
-                    const parsedData = JSON.parse(savedData);
-                    userData = { ...userData, ...parsedData };
-                    console.log('User data loaded successfully:', userData);
-                    updateDebugInfo('Data loaded: ' + JSON.stringify(userData));
+                setTimeout(() => {
+                    // Step 3: Tasks Preparation
+                    updateStep(3, 'Preparing earning tasks', subMessages[2]);
+                    
+                    setTimeout(() => {
+                        // Step 4: Complete
+                        updateStep(4, 'Finalizing setup', subMessages[3]);
+                        
+                        setTimeout(() => {
+                            updateSubMessage(subMessages[4]);
+                            setTimeout(() => {
+                                completeLoading();
+                            }, 1000);
+                        }, 1500);
+                    }, 2000);
+                }, 2000);
+            }, 1500);
+        }
+        
+        function updateStep(step, message, subMessage) {
+            // Update current step
+            currentStep = step;
+            
+            // Update all steps
+            for (let i = 1; i <= 4; i++) {
+                const stepElement = document.getElementById('step' + i);
+                if (i < step) {
+                    stepElement.classList.add('completed');
+                    stepElement.classList.remove('active');
+                } else if (i === step) {
+                    stepElement.classList.add('active');
+                    stepElement.classList.remove('completed');
                 } else {
-                    console.log('No saved data found, using default data');
-                    updateDebugInfo('No saved data found');
-                    saveUserData(); // Save initial data
+                    stepElement.classList.remove('active', 'completed');
                 }
-            } catch (error) {
-                console.error('Error loading user data:', error);
-                updateDebugInfo('Error loading: ' + error.message);
+            }
+            
+            // Update messages
+            document.getElementById('loadingMessage').textContent = message;
+            if (subMessage) {
+                updateSubMessage(subMessage);
             }
         }
         
-        // Save user data
-        function saveUserData() {
-            if (!userData.telegramId) {
-                console.error('No Telegram ID found for saving');
-                return;
-            }
+        function updateSubMessage(message) {
+            document.getElementById('subMessage').textContent = message;
+        }
+        
+        function completeLoading() {
+            // Add completion animation
+            const loadingScreen = document.getElementById('loadingScreen');
+            loadingScreen.style.opacity = '0';
+            loadingScreen.style.transform = 'scale(0.95)';
+            loadingScreen.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
             
-            const storageKey = `telegram_earning_bot_${userData.telegramId}`;
-            userData.lastSave = new Date().toISOString();
-            
-            try {
-                localStorage.setItem(storageKey, JSON.stringify(userData));
-                console.log('User data saved successfully:', userData);
-                updateDebugInfo('Data saved: Balance $' + userData.balance.toFixed(2));
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
                 
-                // Verify the save
-                const verifyData = localStorage.getItem(storageKey);
-                console.log('Verification - loaded data:', verifyData);
-            } catch (error) {
-                console.error('Error saving user data:', error);
-                updateDebugInfo('Error saving: ' + error.message);
-            }
+                // Initialize main app
+                tg.ready();
+            }, 600);
         }
         
-        // Update UI with current user data
-        function updateUI() {
-            document.getElementById('totalBalance').textContent = `$${userData.balance.toFixed(2)}`;
-            document.getElementById('videosWatched').textContent = userData.videosWatched;
-            document.getElementById('completedTasks').textContent = userData.tasksCompleted;
-            document.getElementById('availableSpins').textContent = userData.availableSpins;
-            document.getElementById('todayShort').textContent = userData.todayShort;
-            document.getElementById('todayFull').textContent = userData.todayFull;
-            document.getElementById('todayGaming').textContent = userData.todayGaming;
-        }
-        
-        // Watch video ad function
-        function watchVideoAd(type) {
-            let reward = 0;
-            let duration = "";
-            let todayField = "";
-            
-            switch(type) {
-                case 'short':
-                    reward = 0.10;
-                    duration = "30 সেকেন্ড";
-                    todayField = "todayShort";
-                    if (userData.todayShort >= 10) {
-                        showNotification("আজকের লিমিট শেষ!");
-                        return;
-                    }
-                    break;
-                case 'full':
-                    reward = 0.25;
-                    duration = "2 মিনিট";
-                    todayField = "todayFull";
-                    if (userData.todayFull >= 5) {
-                        showNotification("আজকের লিমিট শেষ!");
-                        return;
-                    }
-                    break;
-                case 'gaming':
-                    reward = 0.15;
-                    duration = "1 মিনিট";
-                    todayField = "todayGaming";
-                    if (userData.todayGaming >= 8) {
-                        showNotification("আজকের লিমিট শেষ!");
-                        return;
-                    }
-                    break;
-            }
-            
-            showNotification(`${duration} ভিডিও লোড হচ্ছে...`);
-            
-            setTimeout(() => {
-                userData.balance += reward;
-                userData.totalEarned += reward;
-                userData.videosWatched++;
-                userData[todayField]++;
-                
-                saveUserData();
-                updateUI();
-                showNotification(`সফল! $${reward.toFixed(2)} যোগ হয়েছে`);
-            }, 3000);
-        }
-        
-        // Complete task function
-        function completeTask(taskType) {
-            let reward = 0;
-            let taskName = "";
-            
-            switch(taskType) {
-                case 'channel_join':
-                    reward = 0.50;
-                    taskName = "চ্যানেল জয়েন";
-                    break;
-                case 'app_install':
-                    reward = 1.00;
-                    taskName = "অ্যাপ ইন্সটল";
-                    break;
-                case 'survey':
-                    reward = 0.75;
-                    taskName = "সার্ভে";
-                    break;
-            }
-            
-            showNotification(`${taskName} টাস্ক শুরু হয়েছে...`);
-            
-            setTimeout(() => {
-                userData.balance += reward;
-                userData.totalEarned += reward;
-                userData.tasksCompleted++;
-                
-                saveUserData();
-                updateUI();
-                showNotification(`সফল! $${reward.toFixed(2)} যোগ হয়েছে`);
-            }, 2000);
-        }
-        
-        // Switch between tabs
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            document.getElementById(tabName + 'Tab').classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-        
-        // Show notification
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            notification.querySelector('.notification-message').textContent = message;
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-        
-        // Update debug info
-        function updateDebugInfo(message) {
-            debugInfo.textContent = message;
-            debugInfo.style.display = 'block';
-            setTimeout(() => {
-                debugInfo.style.display = 'none';
-            }, 5000);
-        }
-        
-        // Reset daily limits (for testing)
-        function resetDailyLimits() {
-            userData.todayShort = 0;
-            userData.todayFull = 0;
-            userData.todayGaming = 0;
-            saveUserData();
-            updateUI();
-            showNotification("ডেইলি লিমিট রিসেট হয়েছে!");
-        }
-        
-        // Initialize the app
-        window.onload = function() {
-            console.log('App starting...');
-            initOnboarding();
-            initTelegram();
-            
-            // Add reset button for testing
-            const resetBtn = document.createElement('button');
-            resetBtn.textContent = 'রিসেট';
-            resetBtn.style.position = 'fixed';
-            resetBtn.style.top = '10px';
-            resetBtn.style.right = '10px';
-            resetBtn.style.zIndex = '9999';
-            resetBtn.style.padding = '5px 10px';
-            resetBtn.style.background = '#ff4444';
-            resetBtn.style.color = 'white';
-            resetBtn.style.border = 'none';
-            resetBtn.style.borderRadius = '5px';
-            resetBtn.style.cursor = 'pointer';
-            resetBtn.onclick = resetDailyLimits;
-            document.body.appendChild(resetBtn);
-        };
+        // Handle errors gracefully
+        window.addEventListener('error', function(e) {
+            console.error('Loading error:', e);
+            updateSubMessage('Optimizing your experience...');
+        });
     </script>
 </body>
-</html>
+    </html>
