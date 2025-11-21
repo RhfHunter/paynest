@@ -1220,6 +1220,9 @@
             const user = tg.initDataUnsafe.user;
             const startParam = tg.initDataUnsafe.start_param;
             
+            console.log('Telegram User:', user);
+            console.log('Start Param:', startParam);
+            
             // Get basic user info
             userData.name = user?.first_name || "User";
             userData.username = user?.username ? `@${user.username}` : "@user";
@@ -1228,19 +1231,29 @@
             // Check if user joined via referral
             if (startParam && startParam.startsWith('ref_')) {
                 userData.hasReferrer = true;
+                const referrerUserId = startParam.replace('ref_', '');
+                
                 userData.referrerData = {
                     name: "Referral User",
                     username: "@referrer",
-                    userId: startParam.replace('ref_', ''),
+                    userId: referrerUserId,
                     referralId: startParam,
-                    referralCode: startParam.toUpperCase(),
-                    referralDate: new Date().toISOString().split('T')[0]
+                    referralCode: `REF${referrerUserId.substr(0, 6).toUpperCase()}`,
+                    referralDate: new Date().toLocaleDateString('en-US')
                 };
+                
+                console.log('Referrer Data Found:', userData.referrerData);
+            } else {
+                userData.hasReferrer = false;
+                userData.referrerData = null;
+                console.log('No referrer data found');
             }
             
             // Generate user's referral code and link
             userData.referralCode = `EM${userData.userId.substr(0, 6).toUpperCase()}`;
             userData.referralLink = `https://t.me/freehot_bdbot?start=ref_${userData.userId}`;
+            
+            console.log('Final User Data:', userData);
             
             return userData;
         }
@@ -1271,15 +1284,10 @@
                 document.getElementById('referralCode').textContent = userData.referrerData.referralCode;
                 document.getElementById('referrerUserId').textContent = userData.referrerData.userId;
                 
-                // Update loading messages for referred user
-                modernSubMessages[0] = "Checking referral information...";
-                modernSubMessages[2] = "Verifying referrer data...";
+                console.log('Referrer section populated successfully');
             } else {
                 referrerSection.style.display = 'none';
-                
-                // Update loading messages for direct user
-                modernSubMessages[0] = "Initializing your account...";
-                modernSubMessages[2] = "Setting up your profile...";
+                console.log('Referrer section hidden - no referrer data');
             }
             
             return userData;
@@ -1290,29 +1298,44 @@
             const userData = populateUserData();
             
             // Step 1: App Initialization
-            updateLoadingStep(1, modernSubMessages[0], "");
+            let step1Message = userData.hasReferrer ? 
+                "Checking referral information..." : 
+                "Initializing your account...";
+            updateLoadingStep(1, step1Message, "");
             animateProgressBar(0, 25, 800);
             
             setTimeout(() => {
                 // Step 2: Profile Setup
-                updateLoadingStep(2, modernSubMessages[1], `Welcome ${userData.name}`);
+                let step2Message = "Loading your profile...";
+                let step2SubMessage = `Welcome ${userData.name}`;
+                updateLoadingStep(2, step2Message, step2SubMessage);
                 animateProgressBar(25, 50, 800);
                 
                 setTimeout(() => {
                     // Step 3: Data Verification
-                    const message = userData.hasReferrer ? 
+                    let step3Message = userData.hasReferrer ? 
+                        "Verifying referrer data..." : 
+                        "Setting up your profile...";
+                    let step3SubMessage = userData.hasReferrer ? 
                         `Referred by ${userData.referrerData.name}` : 
                         "Direct registration";
-                    updateLoadingStep(3, modernSubMessages[2], message);
+                    updateLoadingStep(3, step3Message, step3SubMessage);
                     animateProgressBar(50, 75, 800);
                     
                     setTimeout(() => {
                         // Step 4: Complete
-                        updateLoadingStep(4, modernSubMessages[3], "Almost ready...");
+                        let step4Message = "Finalizing setup...";
+                        let step4SubMessage = userData.hasReferrer ? 
+                            "Referral bonus activated!" : 
+                            "Almost ready...";
+                        updateLoadingStep(4, step4Message, step4SubMessage);
                         animateProgressBar(75, 95, 800);
                         
                         setTimeout(() => {
-                            updateLoadingSubMessage(modernSubMessages[4]);
+                            let finalMessage = userData.hasReferrer ? 
+                                "Referral account ready!" : 
+                                "Ready to earn!";
+                            updateLoadingSubMessage(finalMessage);
                             animateProgressBar(95, 100, 400);
                             
                             setTimeout(() => {
