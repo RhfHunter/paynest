@@ -21,7 +21,7 @@
             overflow-x: hidden;
         }
 
-        /* Loading Screen Styles - Your Preferred Design */
+        /* Loading Screen Styles */
         .loading-screen {
             position: fixed;
             top: 0;
@@ -34,7 +34,6 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            transition: opacity 0.8s ease, transform 0.8s ease;
         }
 
         .geometric-bg {
@@ -434,7 +433,6 @@
             width: 0%;
             background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1);
             border-radius: 2px;
-            animation: modernProgress 7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
             position: relative;
             overflow: hidden;
         }
@@ -448,15 +446,6 @@
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
             animation: modernShimmer 2s infinite;
-        }
-
-        @keyframes modernProgress {
-            0% { width: 0%; }
-            20% { width: 25%; }
-            40% { width: 50%; }
-            60% { width: 75%; }
-            80% { width: 90%; }
-            100% { width: 100%; }
         }
 
         @keyframes modernShimmer {
@@ -581,6 +570,11 @@
             height: 200%;
             background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
             animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
         .balance-label {
@@ -749,4 +743,614 @@
 
         .task-meta {
             display: flex;
-            justify-co
+            justify-content: space-between;
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .referral-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .referral-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .referral-desc {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 20px;
+        }
+
+        .referral-code {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .code-value {
+            font-size: 24px;
+            font-weight: 800;
+            font-family: monospace;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            color: #4DD0E1;
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #7877C6 0%, #4DD0E1 100%);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(120, 119, 198, 0.4);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-around;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 12px;
+        }
+
+        .nav-item.active {
+            background: rgba(120, 119, 198, 0.2);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .nav-item.active .nav-icon {
+            color: #4DD0E1;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            color: rgba(255,255,255,0.7);
+            font-weight: 500;
+        }
+
+        .nav-item.active .nav-label {
+            color: #4DD0E1;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="geometric-bg">
+            <div class="geo-shape"></div>
+            <div class="geo-shape"></div>
+            <div class="geo-shape"></div>
+        </div>
+        <div class="grid-lines"></div>
+        
+        <div class="modern-container">
+            <!-- Header Section -->
+            <div class="modern-header">
+                <div class="modern-logo">
+                    <div class="logo-circle">
+                        <div class="logo-icon">M</div>
+                    </div>
+                </div>
+                <div class="modern-title">EarnMax</div>
+                <div class="modern-subtitle">Maximize Your Earnings</div>
+            </div>
+            
+            <!-- Profile Section -->
+            <div class="modern-profile">
+                <div class="modern-avatar-container">
+                    <div class="modern-avatar">
+                        <img id="profilePic" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="Profile">
+                    </div>
+                </div>
+                <div class="modern-user-info">
+                    <div class="modern-user-name" id="userName">Welcome</div>
+                    <div class="modern-user-username" id="userUsername">@earner</div>
+                </div>
+                
+                <!-- Referrer Section -->
+                <div class="referrer-section">
+                    <div class="referrer-title">Referred By</div>
+                    <div class="referrer-info">
+                        <div class="referrer-avatar">
+                            <img id="referrerAvatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" alt="Referrer">
+                        </div>
+                        <div class="referrer-details">
+                            <div class="referrer-name" id="referrerName">John Smith</div>
+                            <div class="referrer-username" id="referrerUsername">@johnsmith</div>
+                            <div class="referrer-id" id="referrerId">ID: 123456789</div>
+                        </div>
+                    </div>
+                    <div class="referral-data">
+                        <div class="data-item">
+                            <span class="data-label">Referral Date:</span>
+                            <span class="data-value" id="referralDate">2024-01-15</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Referral Code:</span>
+                            <span class="data-value" id="referralCode">REF123XYZ</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">User ID:</span>
+                            <span class="data-value" id="referrerUserId">987654321</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Progress Section -->
+            <div class="modern-progress">
+                <div class="modern-steps">
+                    <div class="modern-step active" id="step1">
+                        <div class="modern-step-dot">1</div>
+                        <div class="modern-step-text">Init</div>
+                    </div>
+                    <div class="modern-step" id="step2">
+                        <div class="modern-step-dot">2</div>
+                        <div class="modern-step-text">Profile</div>
+                    </div>
+                    <div class="modern-step" id="step3">
+                        <div class="modern-step-dot">3</div>
+                        <div class="modern-step-text">Data</div>
+                    </div>
+                    <div class="modern-step" id="step4">
+                        <div class="modern-step-dot">4</div>
+                        <div class="modern-step-text">Ready</div>
+                    </div>
+                </div>
+                
+                <div class="modern-progress-container">
+                    <div class="modern-progress-bar" id="progressBar"></div>
+                </div>
+                
+                <div class="modern-message-container">
+                    <div class="modern-message" id="loadingMessage">
+                        Loading Referral Information
+                    </div>
+                    <div class="modern-submessage" id="subMessage">
+                        Fetching referrer data
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modern-status">
+            <span class="modern-status-dot"></span>
+            Secure • Fast • Premium • v2.0
+        </div>
+    </div>
+
+    <!-- Home Page Content -->
+    <div class="home-container" id="homePage">
+        <!-- Header -->
+        <div class="home-header">
+            <div class="welcome-section">
+                <h1>Welcome back! 👋</h1>
+                <p>Ready to earn today?</p>
+            </div>
+            <div class="notification-bell">
+                <span class="material-icons">notifications</span>
+                <div class="notification-dot"></div>
+            </div>
+        </div>
+
+        <!-- Balance Card -->
+        <div class="balance-card">
+            <div class="balance-label">Total Balance</div>
+            <div class="balance-amount">৳ 125.50</div>
+            <div class="balance-actions">
+                <button class="balance-btn">
+                    <span class="material-icons" style="font-size: 16px; margin-right: 5px;">add</span>
+                    Deposit
+                </button>
+                <button class="balance-btn">
+                    <span class="material-icons" style="font-size: 16px; margin-right: 5px;">arrow_upward</span>
+                    Withdraw
+                </button>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="quick-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <span class="material-icons">task_alt</span>
+                </div>
+                <div class="stat-value">12</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <span class="material-icons">schedule</span>
+                </div>
+                <div class="stat-value">5</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <span class="material-icons">trending_up</span>
+                </div>
+                <div class="stat-value">৳ 45</div>
+                <div class="stat-label">Today</div>
+            </div>
+        </div>
+
+        <!-- Tasks Section -->
+        <div class="tasks-section">
+            <div class="section-header">
+                <div class="section-title">Available Tasks</div>
+                <div class="see-all">See All</div>
+            </div>
+            <div class="tasks-grid">
+                <div class="task-card">
+                    <div class="task-header">
+                        <div class="task-info">
+                            <h3>Watch Videos</h3>
+                            <p>Watch short videos and earn money</p>
+                        </div>
+                        <div class="task-reward">৳ 0.50</div>
+                    </div>
+                    <div class="task-progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <div class="task-meta">
+                        <span>15/25 completed</span>
+                        <span>Easy</span>
+                    </div>
+                </div>
+
+                <div class="task-card">
+                    <div class="task-header">
+                        <div class="task-info">
+                            <h3>Complete Surveys</h3>
+                            <p>Share your opinion and get paid</p>
+                        </div>
+                        <div class="task-reward">৳ 2.00</div>
+                    </div>
+                    <div class="task-progress">
+                        <div class="progress-bar" style="width: 30%;"></div>
+                    </div>
+                    <div class="task-meta">
+                        <span>3/10 completed</span>
+                        <span>Medium</span>
+                    </div>
+                </div>
+
+                <div class="task-card">
+                    <div class="task-header">
+                        <div class="task-info">
+                            <h3>App Installation</h3>
+                            <p>Install apps and earn rewards</p>
+                        </div>
+                        <div class="task-reward">৳ 5.00</div>
+                    </div>
+                    <div class="task-progress">
+                        <div class="progress-bar" style="width: 80%;"></div>
+                    </div>
+                    <div class="task-meta">
+                        <span>8/10 completed</span>
+                        <span>Easy</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Referral Section -->
+        <div class="referral-section">
+            <div class="referral-title">Invite Friends & Earn</div>
+            <div class="referral-desc">Get ৳ 10 for each friend who joins</div>
+            <div class="referral-code">
+                <div class="code-value">EARNMAX123</div>
+                <div style="font-size: 12px; color: rgba(255,255,255,0.6);">Your referral code</div>
+            </div>
+            <button class="copy-btn">
+                <span class="material-icons" style="font-size: 16px; margin-right: 5px;">content_copy</span>
+                Copy Code
+            </button>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active">
+            <span class="material-icons nav-icon">home</span>
+            <div class="nav-label">Home</div>
+        </div>
+        <div class="nav-item">
+            <span class="material-icons nav-icon">task</span>
+            <div class="nav-label">Tasks</div>
+        </div>
+        <div class="nav-item">
+            <span class="material-icons nav-icon">account_balance_wallet</span>
+            <div class="nav-label">Earnings</div>
+        </div>
+        <div class="nav-item">
+            <span class="material-icons nav-icon">person</span>
+            <div class="nav-label">Profile</div>
+        </div>
+    </div>
+
+    <script>
+        // Telegram Web App Initialization
+        const tg = window.Telegram.WebApp;
+        
+        let currentStep = 1;
+        const modernSubMessages = [
+            "Loading referral information...",
+            "Setting up your profile...",
+            "Fetching referrer data...",
+            "Verifying referral details...",
+            "Referral verified successfully!"
+        ];
+
+        // Single referrer data
+        const referrerData = {
+            name: "John Smith",
+            username: "@johnsmith",
+            avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+            userId: "987654321",
+            referralId: "123456789",
+            referralCode: "REF123XYZ",
+            referralDate: "2024-01-15",
+            joinDate: "2023-12-01",
+            totalReferrals: 47,
+            isPremium: true
+        };
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+        
+        function initializeApp() {
+            tg.expand();
+            tg.enableClosingConfirmation();
+            
+            // Start loading sequence immediately
+            startLoadingSequence();
+        }
+
+        function populateReferrerData() {
+            // Populate referrer information
+            document.getElementById('referrerName').textContent = referrerData.name;
+            document.getElementById('referrerUsername').textContent = referrerData.username;
+            document.getElementById('referrerAvatar').src = referrerData.avatar;
+            document.getElementById('referrerId').textContent = `ID: ${referrerData.referralId}`;
+            document.getElementById('referralDate').textContent = referrerData.referralDate;
+            document.getElementById('referralCode').textContent = referrerData.referralCode;
+            document.getElementById('referrerUserId').textContent = referrerData.userId;
+        }
+        
+        function startLoadingSequence() {
+            const progressBar = document.getElementById('progressBar');
+            
+            // Step 1: Referral Initialization
+            updateLoadingStep(1, 'Referral Initialization', modernSubMessages[0]);
+            animateProgressBar(0, 25, 800);
+            
+            setTimeout(() => {
+                // Populate referrer data
+                populateReferrerData();
+                
+                // Set user info from Telegram
+                const user = tg.initDataUnsafe.user;
+                if (user) {
+                    document.getElementById('userName').textContent = user.first_name || 'New Member';
+                    document.getElementById('userUsername').textContent = user.username ? '@' + user.username : '@newmember';
+                    
+                    if (user.photo_url) {
+                        document.getElementById('profilePic').src = user.photo_url;
+                    }
+                }
+                
+                // Step 2: Profile Setup
+                updateLoadingStep(2, 'Profile Setup', modernSubMessages[1]);
+                animateProgressBar(25, 50, 800);
+                
+                setTimeout(() => {
+                    // Step 3: Data Sync
+                    updateLoadingStep(3, 'Data Verification', modernSubMessages[2]);
+                    animateProgressBar(50, 75, 800);
+                    
+                    setTimeout(() => {
+                        // Step 4: Complete
+                        updateLoadingStep(4, 'Final Verification', modernSubMessages[3]);
+                        animateProgressBar(75, 95, 800);
+                        
+                        setTimeout(() => {
+                            updateLoadingSubMessage(modernSubMessages[4]);
+                            animateProgressBar(95, 100, 400);
+                            
+                            setTimeout(() => {
+                                completeLoading();
+                            }, 500);
+                        }, 1000);
+                    }, 1000);
+                }, 1000);
+            }, 1000);
+        }
+
+        function animateProgressBar(from, to, duration) {
+            const progressBar = document.getElementById('progressBar');
+            const startTime = performance.now();
+            
+            function updateProgress(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const currentWidth = from + (to - from) * progress;
+                
+                progressBar.style.width = currentWidth + '%';
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updateProgress);
+                }
+            }
+            
+            requestAnimationFrame(updateProgress);
+        }
+        
+        function updateLoadingStep(step, message, subMessage) {
+            // Update current step
+            currentStep = step;
+            
+            // Update all steps
+            for (let i = 1; i <= 4; i++) {
+                const stepElement = document.getElementById('step' + i);
+                if (i < step) {
+                    stepElement.classList.add('completed');
+                    stepElement.classList.remove('active');
+                } else if (i === step) {
+                    stepElement.classList.add('active');
+                    stepElement.classList.remove('completed');
+                } else {
+                    stepElement.classList.remove('active', 'completed');
+                }
+            }
+            
+            // Update messages
+            document.getElementById('loadingMessage').textContent = message;
+            if (subMessage) {
+                updateLoadingSubMessage(subMessage);
+            }
+        }
+        
+        function updateLoadingSubMessage(message) {
+            document.getElementById('subMessage').textContent = message;
+        }
+        
+        function completeLoading() {
+            // Add completion animation
+            const loadingScreen = document.getElementById('loadingScreen');
+            
+            // Fade out loading screen
+            loadingScreen.style.opacity = '0';
+            loadingScreen.style.transition = 'opacity 0.5s ease';
+            
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+                // Show home page
+                document.getElementById('homePage').style.display = 'block';
+                
+                // Initialize home page functionality
+                initializeHomePage();
+            }, 500);
+        }
+        
+        function initializeHomePage() {
+            // Add click handlers for home page
+            setupHomeEventListeners();
+        }
+
+        function setupHomeEventListeners() {
+            // Task card click handlers
+            const taskCards = document.querySelectorAll('.task-card');
+            taskCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const taskTitle = this.querySelector('h3').textContent;
+                    showNotification(`Starting: ${taskTitle}`);
+                });
+            });
+
+            // Copy referral code
+            const copyBtn = document.querySelector('.copy-btn');
+            copyBtn.addEventListener('click', function() {
+                const code = document.querySelector('.code-value').textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    showNotification('Referral code copied!');
+                    this.innerHTML = '<span class="material-icons" style="font-size: 16px; margin-right: 5px;">check</span>Copied!';
+                    setTimeout(() => {
+                        this.innerHTML = '<span class="material-icons" style="font-size: 16px; margin-right: 5px;">content_copy</span>Copy Code';
+                    }, 2000);
+                });
+            });
+
+            // Balance buttons
+            const depositBtn = document.querySelector('.balance-actions .balance-btn:first-child');
+            const withdrawBtn = document.querySelector('.balance-actions .balance-btn:last-child');
+            
+            depositBtn.addEventListener('click', () => {
+                showNotification('Deposit feature coming soon!');
+            });
+            
+            withdrawBtn.addEventListener('click', () => {
+                showNotification('Withdrawal feature coming soon!');
+            });
+
+            // Navigation items
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const label = this.querySelector('.nav-label').textContent;
+                    if (label !== 'Home') {
+                        showNotification(`${label} section coming soon!`);
+                    }
+                });
+            });
+
+            // See all tasks
+            const seeAllBtn = document.querySelector('.see-all');
+            seeAllBtn.addEventListener('click', () => {
+                showNotification('Showing all available tasks!');
+            });
+        }
+
+        function showNotification(message) {
+            // For Telegram Web App, you can use their native alerts
+            if (tg.showAlert) {
+                tg.showAlert(message);
+            } else {
+                alert(message);
+            }
+        }
+
+        // Handle errors gracefully
+        window.addEventListener('error', function(e) {
+            console.error('Loading error:', e);
+            updateLoadingSubMessage('Optimizing your experience...');
+        });
+    </script>
+</body>
+</html>
