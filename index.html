@@ -238,6 +238,7 @@
             max-width: 320px;
             border: 1px solid rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
+            display: none;
         }
 
         .referrer-title {
@@ -787,6 +788,58 @@
             color: #4DD0E1;
         }
 
+        .referral-link-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .referral-link-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #4DD0E1;
+        }
+
+        .referral-link-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .referral-link-input {
+            flex: 1;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: #ffffff;
+            font-size: 14px;
+            font-family: monospace;
+        }
+
+        .referral-link-btn {
+            background: linear-gradient(135deg, #7877C6 0%, #4DD0E1 100%);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .referral-link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(120, 119, 198, 0.4);
+        }
+
         .copy-btn {
             background: linear-gradient(135deg, #7877C6 0%, #4DD0E1 100%);
             border: none;
@@ -797,6 +850,7 @@
             font-size: 14px;
             cursor: pointer;
             transition: all 0.3s ease;
+            width: 100%;
         }
 
         .copy-btn:hover {
@@ -886,34 +940,34 @@
                 </div>
                 <div class="modern-user-info">
                     <div class="modern-user-name" id="userName">Welcome</div>
-                    <div class="modern-user-username" id="userUsername">@earner</div>
+                    <div class="modern-user-username" id="userUsername">@user</div>
                 </div>
                 
-                <!-- Referrer Section -->
-                <div class="referrer-section">
+                <!-- Referrer Section (Hidden by default) -->
+                <div class="referrer-section" id="referrerSection">
                     <div class="referrer-title">Referred By</div>
                     <div class="referrer-info">
                         <div class="referrer-avatar">
-                            <img id="referrerAvatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" alt="Referrer">
+                            <img id="referrerAvatar" src="" alt="Referrer">
                         </div>
                         <div class="referrer-details">
-                            <div class="referrer-name" id="referrerName">John Smith</div>
-                            <div class="referrer-username" id="referrerUsername">@johnsmith</div>
-                            <div class="referrer-id" id="referrerId">ID: 123456789</div>
+                            <div class="referrer-name" id="referrerName"></div>
+                            <div class="referrer-username" id="referrerUsername"></div>
+                            <div class="referrer-id" id="referrerId"></div>
                         </div>
                     </div>
                     <div class="referral-data">
                         <div class="data-item">
                             <span class="data-label">Referral Date:</span>
-                            <span class="data-value" id="referralDate">2024-01-15</span>
+                            <span class="data-value" id="referralDate"></span>
                         </div>
                         <div class="data-item">
                             <span class="data-label">Referral Code:</span>
-                            <span class="data-value" id="referralCode">REF123XYZ</span>
+                            <span class="data-value" id="referralCode"></span>
                         </div>
                         <div class="data-item">
                             <span class="data-label">User ID:</span>
-                            <span class="data-value" id="referrerUserId">987654321</span>
+                            <span class="data-value" id="referrerUserId"></span>
                         </div>
                     </div>
                 </div>
@@ -946,10 +1000,10 @@
                 
                 <div class="modern-message-container">
                     <div class="modern-message" id="loadingMessage">
-                        Loading Referral Information
+                        Initializing App
                     </div>
                     <div class="modern-submessage" id="subMessage">
-                        Fetching referrer data
+                        Loading your data
                     </div>
                 </div>
             </div>
@@ -966,7 +1020,7 @@
         <!-- Header -->
         <div class="home-header">
             <div class="welcome-section">
-                <h1>Welcome back! 👋</h1>
+                <h1 id="homeWelcome">Welcome back! 👋</h1>
                 <p>Ready to earn today?</p>
             </div>
             <div class="notification-bell">
@@ -978,7 +1032,7 @@
         <!-- Balance Card -->
         <div class="balance-card">
             <div class="balance-label">Total Balance</div>
-            <div class="balance-amount">৳ 125.50</div>
+            <div class="balance-amount">৳ 0.00</div>
             <div class="balance-actions">
                 <button class="balance-btn">
                     <span class="material-icons" style="font-size: 16px; margin-right: 5px;">add</span>
@@ -997,23 +1051,38 @@
                 <div class="stat-icon">
                     <span class="material-icons">task_alt</span>
                 </div>
-                <div class="stat-value">12</div>
+                <div class="stat-value">0</div>
                 <div class="stat-label">Completed</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">
                     <span class="material-icons">schedule</span>
                 </div>
-                <div class="stat-value">5</div>
+                <div class="stat-value">0</div>
                 <div class="stat-label">Pending</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">
                     <span class="material-icons">trending_up</span>
                 </div>
-                <div class="stat-value">৳ 45</div>
+                <div class="stat-value">৳ 0</div>
                 <div class="stat-label">Today</div>
             </div>
+        </div>
+
+        <!-- Referral Link Section -->
+        <div class="referral-link-section" id="referralLinkSection">
+            <div class="referral-link-title">Your Referral Link</div>
+            <div class="referral-link-container">
+                <input type="text" class="referral-link-input" id="referralLinkInput" readonly value="Loading...">
+                <button class="referral-link-btn" id="copyLinkBtn">
+                    <span class="material-icons" style="font-size: 16px;">content_copy</span>
+                </button>
+            </div>
+            <button class="copy-btn" id="shareLinkBtn">
+                <span class="material-icons" style="font-size: 16px; margin-right: 5px;">share</span>
+                Share Referral Link
+            </button>
         </div>
 
         <!-- Tasks Section -->
@@ -1035,7 +1104,7 @@
                         <div class="progress-bar"></div>
                     </div>
                     <div class="task-meta">
-                        <span>15/25 completed</span>
+                        <span>0/25 completed</span>
                         <span>Easy</span>
                     </div>
                 </div>
@@ -1049,10 +1118,10 @@
                         <div class="task-reward">৳ 2.00</div>
                     </div>
                     <div class="task-progress">
-                        <div class="progress-bar" style="width: 30%;"></div>
+                        <div class="progress-bar" style="width: 0%;"></div>
                     </div>
                     <div class="task-meta">
-                        <span>3/10 completed</span>
+                        <span>0/10 completed</span>
                         <span>Medium</span>
                     </div>
                 </div>
@@ -1066,10 +1135,10 @@
                         <div class="task-reward">৳ 5.00</div>
                     </div>
                     <div class="task-progress">
-                        <div class="progress-bar" style="width: 80%;"></div>
+                        <div class="progress-bar" style="width: 0%;"></div>
                     </div>
                     <div class="task-meta">
-                        <span>8/10 completed</span>
+                        <span>0/10 completed</span>
                         <span>Easy</span>
                     </div>
                 </div>
@@ -1081,10 +1150,10 @@
             <div class="referral-title">Invite Friends & Earn</div>
             <div class="referral-desc">Get ৳ 10 for each friend who joins</div>
             <div class="referral-code">
-                <div class="code-value">EARNMAX123</div>
+                <div class="code-value" id="userReferralCode">Loading...</div>
                 <div style="font-size: 12px; color: rgba(255,255,255,0.6);">Your referral code</div>
             </div>
-            <button class="copy-btn">
+            <button class="copy-btn" id="copyCodeBtn">
                 <span class="material-icons" style="font-size: 16px; margin-right: 5px;">content_copy</span>
                 Copy Code
             </button>
@@ -1117,25 +1186,22 @@
         
         let currentStep = 1;
         const modernSubMessages = [
-            "Loading referral information...",
-            "Setting up your profile...",
-            "Fetching referrer data...",
-            "Verifying referral details...",
-            "Referral verified successfully!"
+            "Initializing app...",
+            "Loading your profile...",
+            "Checking referral data...",
+            "Finalizing setup...",
+            "Ready to earn!"
         ];
 
-        // Single referrer data
-        const referrerData = {
-            name: "John Smith",
-            username: "@johnsmith",
-            avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
-            userId: "987654321",
-            referralId: "123456789",
-            referralCode: "REF123XYZ",
-            referralDate: "2024-01-15",
-            joinDate: "2023-12-01",
-            totalReferrals: 47,
-            isPremium: true
+        // User data storage
+        let userData = {
+            name: "",
+            username: "",
+            userId: "",
+            hasReferrer: false,
+            referrerData: null,
+            referralCode: "",
+            referralLink: ""
         };
         
         document.addEventListener('DOMContentLoaded', function() {
@@ -1150,51 +1216,99 @@
             startLoadingSequence();
         }
 
-        function populateReferrerData() {
-            // Populate referrer information
-            document.getElementById('referrerName').textContent = referrerData.name;
-            document.getElementById('referrerUsername').textContent = referrerData.username;
-            document.getElementById('referrerAvatar').src = referrerData.avatar;
-            document.getElementById('referrerId').textContent = `ID: ${referrerData.referralId}`;
-            document.getElementById('referralDate').textContent = referrerData.referralDate;
-            document.getElementById('referralCode').textContent = referrerData.referralCode;
-            document.getElementById('referrerUserId').textContent = referrerData.userId;
+        function getUserDataFromTelegram() {
+            const user = tg.initDataUnsafe.user;
+            const startParam = tg.initDataUnsafe.start_param;
+            
+            // Get basic user info
+            userData.name = user?.first_name || "User";
+            userData.username = user?.username ? `@${user.username}` : "@user";
+            userData.userId = user?.id?.toString() || Math.random().toString(36).substr(2, 9);
+            
+            // Check if user joined via referral
+            if (startParam && startParam.startsWith('ref_')) {
+                userData.hasReferrer = true;
+                userData.referrerData = {
+                    name: "Referral User",
+                    username: "@referrer",
+                    userId: startParam.replace('ref_', ''),
+                    referralId: startParam,
+                    referralCode: startParam.toUpperCase(),
+                    referralDate: new Date().toISOString().split('T')[0]
+                };
+            }
+            
+            // Generate user's referral code and link
+            userData.referralCode = `EM${userData.userId.substr(0, 6).toUpperCase()}`;
+            userData.referralLink = `https://t.me/freehot_bdbot?start=ref_${userData.userId}`;
+            
+            return userData;
+        }
+        
+        function populateUserData() {
+            const userData = getUserDataFromTelegram();
+            
+            // Update loading screen
+            document.getElementById('userName').textContent = userData.name;
+            document.getElementById('userUsername').textContent = userData.username;
+            
+            // Update home screen
+            document.getElementById('homeWelcome').textContent = `Welcome ${userData.name}! 👋`;
+            document.getElementById('userReferralCode').textContent = userData.referralCode;
+            document.getElementById('referralLinkInput').value = userData.referralLink;
+            
+            // Show/hide referrer section based on data
+            const referrerSection = document.getElementById('referrerSection');
+            if (userData.hasReferrer && userData.referrerData) {
+                referrerSection.style.display = 'block';
+                
+                // Populate referrer data
+                document.getElementById('referrerName').textContent = userData.referrerData.name;
+                document.getElementById('referrerUsername').textContent = userData.referrerData.username;
+                document.getElementById('referrerAvatar').src = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face";
+                document.getElementById('referrerId').textContent = `ID: ${userData.referrerData.referralId}`;
+                document.getElementById('referralDate').textContent = userData.referrerData.referralDate;
+                document.getElementById('referralCode').textContent = userData.referrerData.referralCode;
+                document.getElementById('referrerUserId').textContent = userData.referrerData.userId;
+                
+                // Update loading messages for referred user
+                modernSubMessages[0] = "Checking referral information...";
+                modernSubMessages[2] = "Verifying referrer data...";
+            } else {
+                referrerSection.style.display = 'none';
+                
+                // Update loading messages for direct user
+                modernSubMessages[0] = "Initializing your account...";
+                modernSubMessages[2] = "Setting up your profile...";
+            }
+            
+            return userData;
         }
         
         function startLoadingSequence() {
             const progressBar = document.getElementById('progressBar');
+            const userData = populateUserData();
             
-            // Step 1: Referral Initialization
-            updateLoadingStep(1, 'Referral Initialization', modernSubMessages[0]);
+            // Step 1: App Initialization
+            updateLoadingStep(1, modernSubMessages[0], "");
             animateProgressBar(0, 25, 800);
             
             setTimeout(() => {
-                // Populate referrer data
-                populateReferrerData();
-                
-                // Set user info from Telegram
-                const user = tg.initDataUnsafe.user;
-                if (user) {
-                    document.getElementById('userName').textContent = user.first_name || 'New Member';
-                    document.getElementById('userUsername').textContent = user.username ? '@' + user.username : '@newmember';
-                    
-                    if (user.photo_url) {
-                        document.getElementById('profilePic').src = user.photo_url;
-                    }
-                }
-                
                 // Step 2: Profile Setup
-                updateLoadingStep(2, 'Profile Setup', modernSubMessages[1]);
+                updateLoadingStep(2, modernSubMessages[1], `Welcome ${userData.name}`);
                 animateProgressBar(25, 50, 800);
                 
                 setTimeout(() => {
-                    // Step 3: Data Sync
-                    updateLoadingStep(3, 'Data Verification', modernSubMessages[2]);
+                    // Step 3: Data Verification
+                    const message = userData.hasReferrer ? 
+                        `Referred by ${userData.referrerData.name}` : 
+                        "Direct registration";
+                    updateLoadingStep(3, modernSubMessages[2], message);
                     animateProgressBar(50, 75, 800);
                     
                     setTimeout(() => {
                         // Step 4: Complete
-                        updateLoadingStep(4, 'Final Verification', modernSubMessages[3]);
+                        updateLoadingStep(4, modernSubMessages[3], "Almost ready...");
                         animateProgressBar(75, 95, 800);
                         
                         setTimeout(() => {
@@ -1277,30 +1391,55 @@
         }
         
         function initializeHomePage() {
+            const userData = getUserDataFromTelegram();
+            
             // Add click handlers for home page
-            setupHomeEventListeners();
+            setupHomeEventListeners(userData);
         }
 
-        function setupHomeEventListeners() {
+        function setupHomeEventListeners(userData) {
+            // Copy referral code
+            const copyCodeBtn = document.getElementById('copyCodeBtn');
+            copyCodeBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText(userData.referralCode).then(() => {
+                    showNotification('Referral code copied!');
+                    this.innerHTML = '<span class="material-icons" style="font-size: 16px; margin-right: 5px;">check</span>Copied!';
+                    setTimeout(() => {
+                        this.innerHTML = '<span class="material-icons" style="font-size: 16px; margin-right: 5px;">content_copy</span>Copy Code';
+                    }, 2000);
+                });
+            });
+
+            // Copy referral link
+            const copyLinkBtn = document.getElementById('copyLinkBtn');
+            copyLinkBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText(userData.referralLink).then(() => {
+                    showNotification('Referral link copied!');
+                });
+            });
+
+            // Share referral link
+            const shareLinkBtn = document.getElementById('shareLinkBtn');
+            shareLinkBtn.addEventListener('click', function() {
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Join EarnMax and Start Earning!',
+                        text: `Use my referral code ${userData.referralCode} to get bonus!`,
+                        url: userData.referralLink
+                    });
+                } else {
+                    navigator.clipboard.writeText(userData.referralLink).then(() => {
+                        showNotification('Referral link copied! Share it with your friends.');
+                    });
+                }
+            });
+
             // Task card click handlers
             const taskCards = document.querySelectorAll('.task-card');
             taskCards.forEach(card => {
                 card.addEventListener('click', function() {
                     const taskTitle = this.querySelector('h3').textContent;
                     showNotification(`Starting: ${taskTitle}`);
-                });
-            });
-
-            // Copy referral code
-            const copyBtn = document.querySelector('.copy-btn');
-            copyBtn.addEventListener('click', function() {
-                const code = document.querySelector('.code-value').textContent;
-                navigator.clipboard.writeText(code).then(() => {
-                    showNotification('Referral code copied!');
-                    this.innerHTML = '<span class="material-icons" style="font-size: 16px; margin-right: 5px;">check</span>Copied!';
-                    setTimeout(() => {
-                        this.innerHTML = '<span class="material-icons" style="font-size: 16px; margin-right: 5px;">content_copy</span>Copy Code';
-                    }, 2000);
                 });
             });
 
