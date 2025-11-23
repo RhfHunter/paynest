@@ -246,7 +246,7 @@
         .profile-name {
             font-size: var(--font-size-md);
             font-weight: 700;
-            margin-bottom: clamp(3px, 1vw, 5px);
+            margin-bottom: clamp(8px, 2vw, 12px);
             color: var(--text);
             line-height: 1.3;
         }
@@ -254,7 +254,6 @@
         .profile-username {
             font-size: var(--font-size-sm);
             color: var(--text-secondary);
-            margin-bottom: clamp(12px, 3vw, 18px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -274,42 +273,6 @@
             font-size: var(--font-size-xs);
             font-weight: 600;
             color: white;
-        }
-
-        .profile-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: clamp(8px, 2vw, 15px);
-            max-width: 250px;
-            margin: 0 auto;
-        }
-
-        @media (min-width: 480px) {
-            .profile-stats {
-                margin: 0;
-            }
-        }
-
-        .stat {
-            text-align: center;
-            padding: clamp(8px, 2vw, 12px);
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-        }
-
-        .stat-value {
-            font-size: clamp(14px, 4vw, 18px);
-            font-weight: 700;
-            color: var(--success);
-            margin-bottom: 4px;
-            line-height: 1.2;
-        }
-
-        .stat-label {
-            font-size: var(--font-size-xs);
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            line-height: 1.2;
         }
 
         /* প্রোগ্রেস সেকশন */
@@ -439,6 +402,39 @@
             width: 100%;
         }
 
+        /* মিউজিক কন্ট্রোল */
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .music-btn {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .music-btn:hover {
+            transform: scale(1.1);
+            box-shadow: var(--glow);
+        }
+
+        .music-btn.muted {
+            background: var(--text-secondary);
+        }
+
         /* অ্যানিমেশন */
         .fade-in-up {
             animation: fadeInUp 0.6s ease forwards;
@@ -460,12 +456,19 @@
 
         /* খুব ছোট ডিভাইসের জন্য অতিরিক্ত স্টাইল */
         @media (max-width: 320px) {
-            .profile-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
             .xo-logo {
                 flex-direction: column;
+            }
+            
+            .music-control {
+                bottom: 10px;
+                right: 10px;
+            }
+            
+            .music-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
             }
         }
 
@@ -481,10 +484,6 @@
             
             .profile-info {
                 text-align: left;
-            }
-            
-            .profile-stats {
-                margin: 0;
             }
         }
 
@@ -512,6 +511,11 @@
                 width: 60px;
                 height: 60px;
             }
+            
+            .music-control {
+                bottom: 10px;
+                right: 10px;
+            }
         }
     </style>
 </head>
@@ -524,6 +528,19 @@
         <div class="floating-xo x" style="top: 75%; left: 10%;">X</div>
         <div class="floating-xo o" style="top: 65%; left: 90%;">O</div>
         <div class="floating-xo x" style="top: 90%; left: 75%;">X</div>
+    </div>
+
+    <!-- ব্যাকগ্রাউন্ড মিউজিক -->
+    <audio id="backgroundMusic" loop>
+        <source src="https://assets.mixkit.co/music/preview/mixkit-game-show-suspense-waiting-667.mp3" type="audio/mpeg">
+        <source src="https://assets.mixkit.co/music/preview/mixkit-game-show-suspense-waiting-667.wav" type="audio/wav">
+    </audio>
+
+    <!-- মিউজিক কন্ট্রোল -->
+    <div class="music-control">
+        <button class="music-btn" id="musicToggle">
+            <i class="fas fa-volume-up"></i>
+        </button>
     </div>
 
     <div class="responsive-container">
@@ -548,20 +565,6 @@
                         <span id="userUsername">@username</span>
                         <div class="telegram-badge">
                             <i class="fab fa-telegram"></i> Telegram
-                        </div>
-                    </div>
-                    <div class="profile-stats">
-                        <div class="stat">
-                            <div class="stat-value" id="statWins">0</div>
-                            <div class="stat-label">Wins</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value" id="statRate">0%</div>
-                            <div class="stat-label">Win Rate</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value" id="statRank">#0</div>
-                            <div class="stat-label">Rank</div>
                         </div>
                     </div>
                 </div>
@@ -645,25 +648,51 @@
             document.getElementById('userUsername').textContent = '@ahsan_xo';
         }
 
+        // ব্যাকগ্রাউন্ড মিউজিক কন্ট্রোল
+        function setupMusicControl() {
+            const music = document.getElementById('backgroundMusic');
+            const toggleBtn = document.getElementById('musicToggle');
+            const icon = toggleBtn.querySelector('i');
+            
+            // ভলিউম সেট
+            music.volume = 0.3;
+            
+            // অটোপ্লে করার চেষ্টা করুন
+            music.play().catch(error => {
+                console.log('Autoplay prevented:', error);
+                // ইউজার ইন্টার‍্যাকশনের পর প্লে করবে
+                toggleBtn.style.background = 'var(--text-secondary)';
+            });
+            
+            toggleBtn.addEventListener('click', function() {
+                if (music.paused) {
+                    music.play();
+                    icon.className = 'fas fa-volume-up';
+                    toggleBtn.classList.remove('muted');
+                } else {
+                    music.pause();
+                    icon.className = 'fas fa-volume-mute';
+                    toggleBtn.classList.add('muted');
+                }
+            });
+        }
+
         // ৮ সেকেন্ড লোডিং সিকোয়েন্স
         function startLoadingSequence() {
             const progressFill = document.getElementById('progressFill');
             const percentage = document.getElementById('percentage');
             const statusMessage = document.getElementById('statusMessage');
             const statusSubtext = document.getElementById('statusSubtext');
-            const statWins = document.getElementById('statWins');
-            const statRate = document.getElementById('statRate');
-            const statRank = document.getElementById('statRank');
             
             const loadingSteps = [
-                { progress: 12, message: "Initializing Game", subtext: "Loading core modules", wins: 0, rate: "0%", rank: "#0" },
-                { progress: 25, message: "Loading Assets", subtext: "Loading game resources", wins: 25, rate: "25%", rank: "#45" },
-                { progress: 40, message: "Setting Up AI", subtext: "Preparing smart opponents", wins: 50, rate: "45%", rank: "#32" },
-                { progress: 55, message: "Network Setup", subtext: "Connecting multiplayer services", wins: 75, rate: "60%", rank: "#25" },
-                { progress: 70, message: "Profile Sync", subtext: "Synchronizing user data", wins: 100, rate: "72%", rank: "#18" },
-                { progress: 85, message: "Finalizing", subtext: "Optimizing performance", wins: 127, rate: "78%", rank: "#15" },
-                { progress: 95, message: "Almost Ready", subtext: "Final preparations", wins: 156, rate: "82%", rank: "#12" },
-                { progress: 100, message: "Ready to Play!", subtext: "Game loaded successfully", wins: 156, rate: "82%", rank: "#12" }
+                { progress: 12, message: "Initializing Game", subtext: "Loading core modules" },
+                { progress: 25, message: "Loading Assets", subtext: "Loading game resources" },
+                { progress: 40, message: "Setting Up AI", subtext: "Preparing smart opponents" },
+                { progress: 55, message: "Network Setup", subtext: "Connecting multiplayer services" },
+                { progress: 70, message: "Profile Sync", subtext: "Synchronizing user data" },
+                { progress: 85, message: "Finalizing", subtext: "Optimizing performance" },
+                { progress: 95, message: "Almost Ready", subtext: "Final preparations" },
+                { progress: 100, message: "Ready to Play!", subtext: "Game loaded successfully" }
             ];
             
             let currentStep = 0;
@@ -679,17 +708,12 @@
                     statusMessage.textContent = step.message;
                     statusSubtext.textContent = step.subtext;
                     
-                    // স্ট্যাটস আপডেট
-                    statWins.textContent = step.wins;
-                    statRate.textContent = step.rate;
-                    statRank.textContent = step.rank;
-                    
                     currentStep++;
                     setTimeout(updateLoading, stepTime);
                 } else {
                     // লোডিং সম্পূর্ণ
                     setTimeout(() => {
-                        console.log("XO Pro loaded successfully with Telegram user data!");
+                        console.log("XO Pro loaded successfully with background music!");
                         // এখানে মূল গেম পেজে রিডাইরেক্ট করবেন
                         // window.location.href = "game.html";
                     }, 1000);
@@ -703,6 +727,7 @@
         // DOM লোড হওয়ার পর
         document.addEventListener('DOMContentLoaded', function() {
             loadTelegramUserData();
+            setupMusicControl();
             setTimeout(startLoadingSequence, 1000);
             
             // ভিউপোর্ট হাইট ইস্যু ফিক্স
