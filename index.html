@@ -3,1515 +3,717 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EarnMax</title>
+    <title>XO Pro - Loading</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;800&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        :root {
+            --primary: #00f3ff;
+            --primary-dark: #00c4cc;
+            --secondary: #ff2d75;
+            --accent: #b967ff;
+            --success: #00ff88;
+            --dark: #0a0a15;
+            --darker: #050510;
+            --card: #1a1a2e;
+            --text: #ffffff;
+            --text-secondary: #8892b0;
+            --border: #2a2a4a;
+            --gradient: linear-gradient(135deg, #00f3ff, #b967ff, #ff2d75);
+            --gradient-primary: linear-gradient(135deg, #00f3ff, #00c4cc);
+            --gradient-secondary: linear-gradient(135deg, #ff2d75, #ff6b9d);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --glow: 0 0 20px rgba(0, 243, 255, 0.2);
+            
+            /* রেস্পন্সিভ সাইজ ভেরিয়েবল */
+            --container-padding: clamp(15px, 4vw, 30px);
+            --box-padding: clamp(20px, 5vw, 25px);
+            --font-size-lg: clamp(24px, 6vw, 36px);
+            --font-size-md: clamp(16px, 4vw, 20px);
+            --font-size-sm: clamp(12px, 3vw, 14px);
+            --font-size-xs: clamp(10px, 2.5vw, 12px);
+            --avatar-size: clamp(80px, 20vw, 120px);
+            --icon-size: clamp(30px, 8vw, 40px);
         }
 
         body {
-            background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #16213e 100%);
-            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--darker);
+            color: var(--text);
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             overflow-x: hidden;
+            padding: 10px;
         }
 
-        /* Loading Screen Styles */
-        .loading-screen {
+        /* XO থিম ব্যাকগ্রাউন্ড */
+        .xo-theme-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #16213e 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0, 243, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(255, 45, 117, 0.1) 0%, transparent 40%),
+                linear-gradient(45deg, var(--darker) 0%, #0c0c1c 100%);
+            z-index: -2;
         }
 
-        .geometric-bg {
+        .xo-grid {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.1;
-        }
-
-        .geo-shape {
-            position: absolute;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
-            border-radius: 8px;
-            animation: geoFloat 20s ease-in-out infinite;
-        }
-
-        .geo-shape:nth-child(1) {
-            width: 80px;
-            height: 80px;
-            top: 15%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .geo-shape:nth-child(2) {
-            width: 120px;
-            height: 120px;
-            top: 60%;
-            right: 8%;
-            animation-delay: -5s;
-            border-radius: 20px;
-        }
-
-        .geo-shape:nth-child(3) {
-            width: 60px;
-            height: 60px;
-            bottom: 20%;
-            left: 20%;
-            animation-delay: -10s;
-            border-radius: 30px;
-        }
-
-        @keyframes geoFloat {
-            0%, 100% { 
-                transform: translateY(0px) rotate(0deg) scale(1);
-                opacity: 0.1;
-            }
-            33% { 
-                transform: translateY(-40px) rotate(90deg) scale(1.1);
-                opacity: 0.15;
-            }
-            66% { 
-                transform: translateY(20px) rotate(180deg) scale(0.9);
-                opacity: 0.08;
-            }
-        }
-
-        .grid-lines {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
             background-image: 
-                linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
-            animation: gridMove 40s linear infinite;
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: clamp(40px, 10vw, 60px) clamp(40px, 10vw, 60px);
+            opacity: 0.1;
+            z-index: -1;
         }
 
-        @keyframes gridMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(30px, 30px); }
+        .floating-xo {
+            position: absolute;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            opacity: 0.05;
+            animation: floatXO 8s ease-in-out infinite;
+            font-size: clamp(30px, 8vw, 80px);
         }
 
-        .modern-container {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            max-width: 420px;
-            width: 90%;
-            padding: 40px 0;
+        .floating-xo.x { color: var(--primary); }
+        .floating-xo.o { color: var(--secondary); }
+
+        @keyframes floatXO {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(5vw, -3vh) rotate(90deg); }
+            50% { transform: translate(-3vw, 5vh) rotate(180deg); }
+            75% { transform: translate(-5vw, -3vh) rotate(270deg); }
         }
 
-        .modern-header {
-            margin-bottom: 50px;
-        }
-
-        .modern-logo {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto 20px;
-            position: relative;
-        }
-
-        .logo-circle {
+        /* মেইন কন্টেইনার */
+        .responsive-container {
             width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg, #ff6b6b, #4ecdc4, #45b7d1, #96e6a1, #ff6b6b);
+            max-width: 450px;
+            min-width: 280px;
+            padding: var(--container-padding);
+        }
+
+        /* হেডার সেকশন */
+        .responsive-header {
+            text-align: center;
+            margin-bottom: clamp(30px, 8vw, 50px);
+        }
+
+        .xo-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: clamp(10px, 3vw, 15px);
+            margin-bottom: clamp(15px, 4vw, 20px);
+            padding: clamp(15px, 4vw, 20px) clamp(20px, 5vw, 30px);
+            background: rgba(26, 26, 46, 0.9);
+            border: 2px solid var(--border);
+            border-radius: clamp(15px, 4vw, 20px);
+            backdrop-filter: blur(10px);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .logo-symbol {
+            width: clamp(40px, 10vw, 50px);
+            height: clamp(40px, 10vw, 50px);
+            background: var(--gradient);
+            border-radius: clamp(8px, 2vw, 12px);
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: logoRotate 3s linear infinite;
-            position: relative;
-        }
-
-        .logo-circle::before {
-            content: '';
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: #000000;
-            border-radius: 50%;
-        }
-
-        .logo-icon {
-            position: relative;
-            z-index: 2;
-            font-size: 24px;
-            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(18px, 5vw, 24px);
+            font-weight: 900;
             color: white;
+            flex-shrink: 0;
         }
 
-        @keyframes logoRotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .modern-title {
-            font-size: 42px;
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: var(--font-size-lg);
             font-weight: 800;
-            background: linear-gradient(135deg, #ffffff 0%, #a8b1ff 50%, #4ecdc4 100%);
+            background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 8px;
-            letter-spacing: -1px;
+            line-height: 1.2;
         }
 
-        .modern-subtitle {
-            font-size: 16px;
-            color: rgba(255,255,255,0.7);
-            font-weight: 400;
-            letter-spacing: 0.5px;
-        }
-
-        .modern-profile {
-            margin-bottom: 40px;
-            position: relative;
-        }
-
-        .modern-avatar-container {
-            position: relative;
-            width: 90px;
-            height: 90px;
-            margin: 0 auto 20px;
-        }
-
-        .modern-avatar {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #2c2c54, #40407a);
-            border: 2px solid rgba(255,255,255,0.1);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .modern-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .modern-user-info {
-            margin-bottom: 25px;
-        }
-
-        .modern-user-name {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: #ffffff;
-        }
-
-        .modern-user-username {
-            font-size: 14px;
-            color: #4ecdc4;
+        .tagline {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
             font-weight: 500;
-            letter-spacing: 0.3px;
+            line-height: 1.4;
         }
 
-        .referrer-section {
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 20px;
-            margin: 0 auto 30px;
-            max-width: 320px;
-            border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            display: none;
-        }
-
-        .referrer-title {
-            font-size: 14px;
-            color: rgba(255,255,255,0.6);
-            margin-bottom: 15px;
-            font-weight: 500;
-            text-align: center;
-        }
-
-        .referrer-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .referrer-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #4ecdc4, #45b7d1);
-            overflow: hidden;
-            flex-shrink: 0;
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-
-        .referrer-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .referrer-details {
-            flex: 1;
-            text-align: left;
-        }
-
-        .referrer-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 4px;
-        }
-
-        .referrer-username {
-            font-size: 13px;
-            color: #4ecdc4;
-            font-weight: 500;
-        }
-
-        .referrer-id {
-            font-size: 12px;
-            color: rgba(255,255,255,0.5);
-            font-family: monospace;
-            background: rgba(0,0,0,0.3);
-            padding: 4px 8px;
-            border-radius: 6px;
-            display: inline-block;
-        }
-
-        .referral-data {
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            padding: 12px;
-            margin-top: 10px;
-        }
-
-        .data-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .data-item:last-child {
-            border-bottom: none;
-        }
-
-        .data-label {
-            font-size: 12px;
-            color: rgba(255,255,255,0.6);
-            font-weight: 500;
-        }
-
-        .data-value {
-            font-size: 12px;
-            color: #4ecdc4;
-            font-weight: 600;
-            font-family: monospace;
-        }
-
-        .modern-progress {
-            margin-bottom: 35px;
-        }
-
-        .modern-steps {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 25px;
-            position: relative;
-            padding: 0 15px;
-        }
-
-        .modern-steps::before {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 40px;
-            right: 40px;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                rgba(78, 205, 196, 0.3) 0%, 
-                rgba(78, 205, 196, 0.6) 50%, 
-                rgba(78, 205, 196, 0.3) 100%);
-            z-index: 1;
-        }
-
-        .modern-step {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            flex: 1;
-        }
-
-        .modern-step-dot {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            margin: 0 auto 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid rgba(255,255,255,0.2);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            font-weight: 600;
-            font-size: 12px;
-            color: rgba(255,255,255,0.6);
-        }
-
-        .modern-step.active .modern-step-dot {
-            background: linear-gradient(135deg, #4ecdc4 0%, #45b7d1 100%);
-            border-color: rgba(78, 205, 196, 0.5);
-            box-shadow: 0 0 20px rgba(78, 205, 196, 0.4);
-            color: #ffffff;
-            transform: scale(1.1);
-        }
-
-        .modern-step.completed .modern-step-dot {
-            background: linear-gradient(135deg, #96e6a1 0%, #45b7d1 100%);
-            border-color: rgba(150, 230, 161, 0.5);
-        }
-
-        .modern-step.completed .modern-step-dot::before {
-            content: '✓';
-            color: #ffffff;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .modern-step-text {
-            font-size: 11px;
-            color: rgba(255,255,255,0.5);
-            font-weight: 500;
-            transition: all 0.3s ease;
-            letter-spacing: 0.2px;
-        }
-
-        .modern-step.active .modern-step-text {
-            color: #4ecdc4;
-            font-weight: 600;
-        }
-
-        .modern-step.completed .modern-step-text {
-            color: #96e6a1;
-        }
-
-        .modern-progress-container {
-            width: 100%;
-            height: 4px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .modern-progress-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1);
-            border-radius: 2px;
+        /* রেস্পন্সিভ বক্স কম্পোনেন্ট */
+        .responsive-box {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: clamp(15px, 4vw, 18px);
+            padding: var(--box-padding);
+            margin-bottom: clamp(20px, 5vw, 30px);
+            box-shadow: var(--shadow);
             position: relative;
             overflow: hidden;
         }
 
-        .modern-progress-bar::after {
+        .responsive-box::before {
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
-            animation: modernShimmer 2s infinite;
-        }
-
-        @keyframes modernShimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(400%); }
-        }
-
-        .modern-message-container {
-            position: relative;
-            min-height: 20px;
-            margin-bottom: 8px;
-        }
-
-        .modern-message {
-            font-size: 14px;
-            color: rgba(255,255,255,0.9);
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .modern-submessage {
-            font-size: 11px;
-            color: rgba(255,255,255,0.5);
-            margin-top: 3px;
-        }
-
-        .modern-status {
-            position: absolute;
-            bottom: 25px;
             left: 0;
             right: 0;
-            text-align: center;
-            font-size: 11px;
-            color: rgba(255,255,255,0.4);
-            letter-spacing: 0.3px;
+            height: 3px;
+            background: var(--gradient);
         }
 
-        .modern-status-dot {
-            display: inline-block;
-            width: 4px;
-            height: 4px;
-            background: #4ecdc4;
-            border-radius: 50%;
-            margin-right: 6px;
-            animation: modernPulse 1.5s infinite;
-        }
-
-        @keyframes modernPulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
-        }
-
-        /* Home Page Styles */
-        .home-container {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            padding-bottom: 80px;
-            display: none;
-        }
-
-        .home-header {
+        /* প্রোফাইল সেকশন */
+        .profile-content {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-top: 10px;
+            gap: clamp(15px, 4vw, 20px);
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        .welcome-section h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 5px;
-            background: linear-gradient(135deg, #FFFFFF 0%, #A8B1FF 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .welcome-section p {
-            font-size: 14px;
-            color: rgba(255,255,255,0.7);
-        }
-
-        .notification-bell {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 12px;
+        .profile-avatar {
+            width: var(--avatar-size);
+            height: var(--avatar-size);
+            border-radius: 50%;
+            background: var(--gradient);
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-        }
-
-        .notification-dot {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 8px;
-            height: 8px;
-            background: #FF6B6B;
-            border-radius: 50%;
-        }
-
-        .balance-card {
-            background: linear-gradient(135deg, #7877C6 0%, #4DD0E1 100%);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 15px 30px rgba(120, 119, 198, 0.3);
+            font-size: clamp(24px, 6vw, 36px);
+            color: white;
+            font-weight: 700;
+            border: 3px solid rgba(255, 255, 255, 0.2);
             position: relative;
             overflow: hidden;
+            flex-shrink: 0;
         }
 
-        .balance-card::before {
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-avatar::after {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            animation: shine 3s infinite;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: avatarShine 3s infinite;
         }
 
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        @keyframes avatarShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
-        .balance-label {
-            font-size: 14px;
-            color: rgba(255,255,255,0.9);
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .balance-amount {
-            font-size: 36px;
-            font-weight: 800;
-            margin-bottom: 15px;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .balance-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .balance-btn {
+        .profile-info {
             flex: 1;
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .balance-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
-        }
-
-        .quick-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 20px 15px;
+            min-width: 200px;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
         }
 
-        .stat-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 12px;
+        @media (min-width: 480px) {
+            .profile-info {
+                text-align: left;
+            }
+        }
+
+        .profile-name {
+            font-size: var(--font-size-md);
+            font-weight: 700;
+            margin-bottom: clamp(3px, 1vw, 5px);
+            color: var(--text);
+            line-height: 1.3;
+        }
+
+        .profile-username {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-bottom: clamp(12px, 3vw, 18px);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 10px;
-            font-size: 20px;
+            gap: 8px;
+        }
+
+        @media (min-width: 480px) {
+            .profile-username {
+                justify-content: flex-start;
+            }
+        }
+
+        .telegram-badge {
+            background: var(--gradient-secondary);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            color: white;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(8px, 2vw, 15px);
+            max-width: 250px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 480px) {
+            .profile-stats {
+                margin: 0;
+            }
+        }
+
+        .stat {
+            text-align: center;
+            padding: clamp(8px, 2vw, 12px);
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
         }
 
         .stat-value {
-            font-size: 18px;
+            font-size: clamp(14px, 4vw, 18px);
             font-weight: 700;
+            color: var(--success);
             margin-bottom: 4px;
-            color: #4DD0E1;
+            line-height: 1.2;
         }
 
         .stat-label {
-            font-size: 12px;
-            color: rgba(255,255,255,0.7);
-            font-weight: 500;
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            line-height: 1.2;
         }
 
-        .tasks-section {
-            margin-bottom: 25px;
-        }
-
-        .section-header {
+        /* প্রোগ্রেস সেকশন */
+        .progress-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: clamp(12px, 3vw, 18px);
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .section-title {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .see-all {
-            font-size: 14px;
-            color: #4DD0E1;
+        .progress-label {
+            font-size: var(--font-size-sm);
             font-weight: 600;
-            cursor: pointer;
+            color: var(--text-secondary);
+            text-transform: uppercase;
         }
 
-        .tasks-grid {
-            display: grid;
-            gap: 15px;
-        }
-
-        .task-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .task-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(77, 208, 225, 0.3);
-        }
-
-        .task-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-        }
-
-        .task-info h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .task-info p {
-            font-size: 13px;
-            color: rgba(255,255,255,0.7);
-        }
-
-        .task-reward {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            color: #000;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 14px;
+        .progress-percent {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(14px, 4vw, 18px);
             font-weight: 700;
-        }
-
-        .task-progress {
-            background: rgba(255,255,255,0.1);
-            height: 6px;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 10px;
+            color: var(--primary);
         }
 
         .progress-bar {
+            width: 100%;
+            height: clamp(6px, 2vw, 8px);
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #4DD0E1, #7877C6);
-            border-radius: 3px;
-            width: 60%;
+            background: var(--gradient);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.8s ease;
+            position: relative;
         }
 
-        .task-meta {
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: progressShine 2s infinite;
+        }
+
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* স্ট্যাটাস সেকশন */
+        .status-content {
             display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: rgba(255,255,255,0.6);
-        }
-
-        .referral-section {
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
+            align-items: center;
+            justify-content: center;
+            gap: clamp(12px, 3vw, 18px);
+            flex-wrap: wrap;
             text-align: center;
         }
 
-        .referral-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .referral-desc {
-            font-size: 14px;
-            color: rgba(255,255,255,0.7);
-            margin-bottom: 20px;
-        }
-
-        .referral-code {
-            background: rgba(0,0,0,0.3);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .code-value {
-            font-size: 24px;
-            font-weight: 800;
-            font-family: monospace;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            color: #4DD0E1;
-        }
-
-        .referral-link-section {
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        .referral-link-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            text-align: center;
-            color: #4DD0E1;
-        }
-
-        .referral-link-container {
+        .status-icon {
+            width: var(--icon-size);
+            height: var(--icon-size);
+            background: var(--gradient-primary);
+            border-radius: clamp(8px, 2vw, 10px);
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .referral-link-input {
-            flex: 1;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            padding: 12px 15px;
-            color: #ffffff;
-            font-size: 14px;
-            font-family: monospace;
-        }
-
-        .referral-link-btn {
-            background: linear-gradient(135deg, #7877C6 0%, #4DD0E1 100%);
-            border: none;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(14px, 4vw, 18px);
             color: white;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            white-space: nowrap;
+            flex-shrink: 0;
         }
 
-        .referral-link-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(120, 119, 198, 0.4);
+        .status-text {
+            font-size: var(--font-size-md);
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        .copy-btn {
-            background: linear-gradient(135deg, #7877C6 0%, #4DD0E1 100%);
-            border: none;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .status-dots {
+            display: flex;
+            gap: 3px;
+        }
+
+        .status-dot {
+            width: clamp(4px, 1.5vw, 5px);
+            height: clamp(4px, 1.5vw, 5px);
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: dotPulse 1.4s ease-in-out infinite both;
+        }
+
+        .status-dot:nth-child(2) { animation-delay: 0.2s; }
+        .status-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dotPulse {
+            0%, 80%, 100% { 
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% { 
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        .status-subtext {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-top: clamp(5px, 1.5vw, 8px);
+            line-height: 1.4;
             width: 100%;
         }
 
-        .copy-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(120, 119, 198, 0.4);
+        /* অ্যানিমেশন */
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease forwards;
         }
 
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(15, 15, 35, 0.95);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-around;
-            max-width: 400px;
-            margin: 0 auto;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            padding: 8px 15px;
-            border-radius: 12px;
+        .delay-1 { animation-delay: 0.2s; opacity: 0; }
+        .delay-2 { animation-delay: 0.4s; opacity: 0; }
+
+        /* খুব ছোট ডিভাইসের জন্য অতিরিক্ত স্টাইল */
+        @media (max-width: 320px) {
+            .profile-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .xo-logo {
+                flex-direction: column;
+            }
         }
 
-        .nav-item.active {
-            background: rgba(120, 119, 198, 0.2);
+        /* ট্যাবলেট এবং ডেস্কটপ */
+        @media (min-width: 768px) {
+            .responsive-container {
+                max-width: 500px;
+            }
+            
+            .profile-content {
+                justify-content: flex-start;
+            }
+            
+            .profile-info {
+                text-align: left;
+            }
+            
+            .profile-stats {
+                margin: 0;
+            }
         }
 
-        .nav-icon {
-            font-size: 20px;
-            color: rgba(255,255,255,0.7);
-        }
-
-        .nav-item.active .nav-icon {
-            color: #4DD0E1;
-        }
-
-        .nav-label {
-            font-size: 11px;
-            color: rgba(255,255,255,0.7);
-            font-weight: 500;
-        }
-
-        .nav-item.active .nav-label {
-            color: #4DD0E1;
-            font-weight: 600;
+        /* ল্যান্ডস্কেপ মোড */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .responsive-container {
+                max-width: 90%;
+                padding: 10px;
+            }
+            
+            .responsive-header {
+                margin-bottom: 15px;
+            }
+            
+            .responsive-box {
+                margin-bottom: 15px;
+                padding: 15px;
+            }
+            
+            .profile-content {
+                gap: 10px;
+            }
+            
+            .profile-avatar {
+                width: 60px;
+                height: 60px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="geometric-bg">
-            <div class="geo-shape"></div>
-            <div class="geo-shape"></div>
-            <div class="geo-shape"></div>
-        </div>
-        <div class="grid-lines"></div>
-        
-        <div class="modern-container">
-            <!-- Header Section -->
-            <div class="modern-header">
-                <div class="modern-logo">
-                    <div class="logo-circle">
-                        <div class="logo-icon">M</div>
-                    </div>
-                </div>
-                <div class="modern-title">EarnMax</div>
-                <div class="modern-subtitle">Maximize Your Earnings</div>
-            </div>
-            
-            <!-- Profile Section -->
-            <div class="modern-profile">
-                <div class="modern-avatar-container">
-                    <div class="modern-avatar">
-                        <img id="profilePic" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="Profile">
-                    </div>
-                </div>
-                <div class="modern-user-info">
-                    <div class="modern-user-name" id="userName">Welcome</div>
-                    <div class="modern-user-username" id="userUsername">@user</div>
-                </div>
-                
-                <!-- Referrer Section (Hidden by default) -->
-                <div class="referrer-section" id="referrerSection">
-                    <div class="referrer-title">Referred By</div>
-                    <div class="referrer-info">
-                        <div class="referrer-avatar">
-                            <img id="referrerAvatar" src="" alt="Referrer">
-                        </div>
-                        <div class="referrer-details">
-                            <div class="referrer-name" id="referrerName"></div>
-                            <div class="referrer-username" id="referrerUsername"></div>
-                            <div class="referrer-id" id="referrerId"></div>
-                        </div>
-                    </div>
-                    <div class="referral-data">
-                        <div class="data-item">
-                            <span class="data-label">Referral Date:</span>
-                            <span class="data-value" id="referralDate"></span>
-                        </div>
-                        <div class="data-item">
-                            <span class="data-label">Referral Code:</span>
-                            <span class="data-value" id="referralCode"></span>
-                        </div>
-                        <div class="data-item">
-                            <span class="data-label">User ID:</span>
-                            <span class="data-value" id="referrerUserId"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Progress Section -->
-            <div class="modern-progress">
-                <div class="modern-steps">
-                    <div class="modern-step active" id="step1">
-                        <div class="modern-step-dot">1</div>
-                        <div class="modern-step-text">Init</div>
-                    </div>
-                    <div class="modern-step" id="step2">
-                        <div class="modern-step-dot">2</div>
-                        <div class="modern-step-text">Profile</div>
-                    </div>
-                    <div class="modern-step" id="step3">
-                        <div class="modern-step-dot">3</div>
-                        <div class="modern-step-text">Data</div>
-                    </div>
-                    <div class="modern-step" id="step4">
-                        <div class="modern-step-dot">4</div>
-                        <div class="modern-step-text">Ready</div>
-                    </div>
-                </div>
-                
-                <div class="modern-progress-container">
-                    <div class="modern-progress-bar" id="progressBar"></div>
-                </div>
-                
-                <div class="modern-message-container">
-                    <div class="modern-message" id="loadingMessage">
-                        Initializing App
-                    </div>
-                    <div class="modern-submessage" id="subMessage">
-                        Loading your data
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="modern-status">
-            <span class="modern-status-dot"></span>
-            Secure • Fast • Premium • v2.0
-        </div>
+    <!-- XO থিম ব্যাকগ্রাউন্ড -->
+    <div class="xo-theme-bg">
+        <div class="xo-grid"></div>
+        <div class="floating-xo x" style="top: 10%; left: 5%;">X</div>
+        <div class="floating-xo o" style="top: 20%; left: 85%;">O</div>
+        <div class="floating-xo x" style="top: 75%; left: 10%;">X</div>
+        <div class="floating-xo o" style="top: 65%; left: 90%;">O</div>
+        <div class="floating-xo x" style="top: 90%; left: 75%;">X</div>
     </div>
 
-    <!-- Home Page Content -->
-    <div class="home-container" id="homePage">
-        <!-- Header -->
-        <div class="home-header">
-            <div class="welcome-section">
-                <h1 id="homeWelcome">Welcome back! 👋</h1>
-                <p>Ready to earn today?</p>
+    <div class="responsive-container">
+        <!-- হেডার সেকশন -->
+        <div class="responsive-header fade-in-up">
+            <div class="xo-logo">
+                <div class="logo-symbol">XO</div>
+                <h1 class="logo-text">XO PRO</h1>
             </div>
-            <div class="notification-bell">
-                <span class="material-icons">notifications</span>
-                <div class="notification-dot"></div>
-            </div>
+            <p class="tagline">Ultimate Gaming Experience</p>
         </div>
 
-        <!-- Balance Card -->
-        <div class="balance-card">
-            <div class="balance-label">Total Balance</div>
-            <div class="balance-amount">৳ 0.00</div>
-            <div class="balance-actions">
-                <button class="balance-btn">
-                    <span class="material-icons" style="font-size: 16px; margin-right: 5px;">add</span>
-                    Deposit
-                </button>
-                <button class="balance-btn">
-                    <span class="material-icons" style="font-size: 16px; margin-right: 5px;">arrow_upward</span>
-                    Withdraw
-                </button>
-            </div>
-        </div>
-
-        <!-- Quick Stats -->
-        <div class="quick-stats">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <span class="material-icons">task_alt</span>
+        <!-- প্রোফাইল বক্স -->
+        <div class="responsive-box fade-in-up delay-1">
+            <div class="profile-content">
+                <div class="profile-avatar">
+                    <img id="profilePic" alt="Profile Picture">
                 </div>
-                <div class="stat-value">0</div>
-                <div class="stat-label">Completed</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <span class="material-icons">schedule</span>
-                </div>
-                <div class="stat-value">0</div>
-                <div class="stat-label">Pending</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <span class="material-icons">trending_up</span>
-                </div>
-                <div class="stat-value">৳ 0</div>
-                <div class="stat-label">Today</div>
-            </div>
-        </div>
-
-        <!-- Referral Link Section -->
-        <div class="referral-link-section" id="referralLinkSection">
-            <div class="referral-link-title">Your Referral Link</div>
-            <div class="referral-link-container">
-                <input type="text" class="referral-link-input" id="referralLinkInput" readonly value="Loading...">
-                <button class="referral-link-btn" id="copyLinkBtn">
-                    <span class="material-icons" style="font-size: 16px;">content_copy</span>
-                </button>
-            </div>
-            <button class="copy-btn" id="shareLinkBtn">
-                <span class="material-icons" style="font-size: 16px; margin-right: 5px;">share</span>
-                Share Referral Link
-            </button>
-        </div>
-
-        <!-- Tasks Section -->
-        <div class="tasks-section">
-            <div class="section-header">
-                <div class="section-title">Available Tasks</div>
-                <div class="see-all">See All</div>
-            </div>
-            <div class="tasks-grid">
-                <div class="task-card">
-                    <div class="task-header">
-                        <div class="task-info">
-                            <h3>Watch Videos</h3>
-                            <p>Watch short videos and earn money</p>
+                <div class="profile-info">
+                    <h2 class="profile-name" id="userName">Loading...</h2>
+                    <div class="profile-username">
+                        <span id="userUsername">@username</span>
+                        <div class="telegram-badge">
+                            <i class="fab fa-telegram"></i> Telegram
                         </div>
-                        <div class="task-reward">৳ 0.50</div>
                     </div>
-                    <div class="task-progress">
-                        <div class="progress-bar"></div>
-                    </div>
-                    <div class="task-meta">
-                        <span>0/25 completed</span>
-                        <span>Easy</span>
-                    </div>
-                </div>
-
-                <div class="task-card">
-                    <div class="task-header">
-                        <div class="task-info">
-                            <h3>Complete Surveys</h3>
-                            <p>Share your opinion and get paid</p>
+                    <div class="profile-stats">
+                        <div class="stat">
+                            <div class="stat-value" id="statWins">0</div>
+                            <div class="stat-label">Wins</div>
                         </div>
-                        <div class="task-reward">৳ 2.00</div>
-                    </div>
-                    <div class="task-progress">
-                        <div class="progress-bar" style="width: 0%;"></div>
-                    </div>
-                    <div class="task-meta">
-                        <span>0/10 completed</span>
-                        <span>Medium</span>
-                    </div>
-                </div>
-
-                <div class="task-card">
-                    <div class="task-header">
-                        <div class="task-info">
-                            <h3>App Installation</h3>
-                            <p>Install apps and earn rewards</p>
+                        <div class="stat">
+                            <div class="stat-value" id="statRate">0%</div>
+                            <div class="stat-label">Win Rate</div>
                         </div>
-                        <div class="task-reward">৳ 5.00</div>
-                    </div>
-                    <div class="task-progress">
-                        <div class="progress-bar" style="width: 0%;"></div>
-                    </div>
-                    <div class="task-meta">
-                        <span>0/10 completed</span>
-                        <span>Easy</span>
+                        <div class="stat">
+                            <div class="stat-value" id="statRank">#0</div>
+                            <div class="stat-label">Rank</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Referral Section -->
-        <div class="referral-section">
-            <div class="referral-title">Invite Friends & Earn</div>
-            <div class="referral-desc">Get ৳ 10 for each friend who joins</div>
-            <div class="referral-code">
-                <div class="code-value" id="userReferralCode">Loading...</div>
-                <div style="font-size: 12px; color: rgba(255,255,255,0.6);">Your referral code</div>
+        <!-- প্রোগ্রেস বক্স -->
+        <div class="responsive-box fade-in-up delay-1">
+            <div class="progress-info">
+                <div class="progress-label">Game Loading</div>
+                <div class="progress-percent" id="percentage">0%</div>
             </div>
-            <button class="copy-btn" id="copyCodeBtn">
-                <span class="material-icons" style="font-size: 16px; margin-right: 5px;">content_copy</span>
-                Copy Code
-            </button>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
         </div>
-    </div>
 
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <div class="nav-item active">
-            <span class="material-icons nav-icon">home</span>
-            <div class="nav-label">Home</div>
-        </div>
-        <div class="nav-item">
-            <span class="material-icons nav-icon">task</span>
-            <div class="nav-label">Tasks</div>
-        </div>
-        <div class="nav-item">
-            <span class="material-icons nav-icon">account_balance_wallet</span>
-            <div class="nav-label">Earnings</div>
-        </div>
-        <div class="nav-item">
-            <span class="material-icons nav-icon">person</span>
-            <div class="nav-label">Profile</div>
+        <!-- স্ট্যাটাস বক্স -->
+        <div class="responsive-box fade-in-up delay-2">
+            <div class="status-content">
+                <div class="status-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <div class="status-text">
+                    <span id="statusMessage">Initializing Game</span>
+                    <span class="status-dots">
+                        <span class="status-dot"></span>
+                        <span class="status-dot"></span>
+                        <span class="status-dot"></span>
+                    </span>
+                </div>
+                <div class="status-subtext" id="statusSubtext">Preparing your ultimate gaming experience</div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Telegram Web App Initialization
-        const tg = window.Telegram.WebApp;
-        
-        let currentStep = 1;
-        const modernSubMessages = [
-            "Initializing app...",
-            "Loading your profile...",
-            "Checking referral data...",
-            "Finalizing setup...",
-            "Ready to earn!"
-        ];
-
-        // User data storage
-        let userData = {
-            name: "",
-            username: "",
-            userId: "",
-            hasReferrer: false,
-            referrerData: null,
-            referralCode: "",
-            referralLink: ""
-        };
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeApp();
-        });
-        
-        function initializeApp() {
-            tg.expand();
-            tg.enableClosingConfirmation();
+        // টেলিগ্রাম ইউজার ডেটা লোড
+        function loadTelegramUserData() {
+            const tg = window.Telegram?.WebApp;
             
-            // Start loading sequence immediately
-            startLoadingSequence();
-        }
-
-        function getUserDataFromTelegram() {
-            const user = tg.initDataUnsafe.user;
-            const startParam = tg.initDataUnsafe.start_param;
-            
-            console.log('Telegram User:', user);
-            console.log('Start Param:', startParam);
-            
-            // Get basic user info
-            userData.name = user?.first_name || "User";
-            userData.username = user?.username ? `@${user.username}` : "@user";
-            userData.userId = user?.id?.toString() || Math.random().toString(36).substr(2, 9);
-            
-            // Check if user joined via referral
-            if (startParam && startParam.startsWith('ref_')) {
-                userData.hasReferrer = true;
-                const referrerUserId = startParam.replace('ref_', '');
+            if (tg && tg.initDataUnsafe?.user) {
+                const user = tg.initDataUnsafe.user;
                 
-                userData.referrerData = {
-                    name: "Referral User",
-                    username: "@referrer",
-                    userId: referrerUserId,
-                    referralId: startParam,
-                    referralCode: `REF${referrerUserId.substr(0, 6).toUpperCase()}`,
-                    referralDate: new Date().toLocaleDateString('en-US')
-                };
+                // প্রোফাইল পিকচার
+                if (user.photo_url) {
+                    document.getElementById('profilePic').src = user.photo_url;
+                } else {
+                    // ডিফল্ট অ্যাভাটার
+                    document.getElementById('profilePic').src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2300f3ff;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23b967ff;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='40' r='20' fill='url(%23grad)'/%3E%3Ccircle cx='50' cy='100' r='30' fill='url(%23grad)'/%3E%3C/svg%3E";
+                }
                 
-                console.log('Referrer Data Found:', userData.referrerData);
+                // ইউজার নাম
+                let fullName = user.first_name || '';
+                if (user.last_name) {
+                    fullName += ' ' + user.last_name;
+                }
+                document.getElementById('userName').textContent = fullName || 'Telegram User';
+                
+                // ইউজারনেম
+                if (user.username) {
+                    document.getElementById('userUsername').textContent = '@' + user.username;
+                } else {
+                    document.getElementById('userUsername').textContent = 'Telegram User';
+                }
+                
+                // টেলিগ্রাম WebApp সেটআপ
+                tg.expand();
+                tg.BackButton.hide();
+                
             } else {
-                userData.hasReferrer = false;
-                userData.referrerData = null;
-                console.log('No referrer data found');
+                // ডেমো ডেটা (যদি টেলিগ্রাম থেকে ডেটা না আসে)
+                setupDemoData();
             }
-            
-            // Generate user's referral code and link
-            userData.referralCode = `EM${userData.userId.substr(0, 6).toUpperCase()}`;
-            userData.referralLink = `https://t.me/freehot_bdbot?start=ref_${userData.userId}`;
-            
-            console.log('Final User Data:', userData);
-            
-            return userData;
         }
-        
-        function populateUserData() {
-            const userData = getUserDataFromTelegram();
-            
-            // Update loading screen
-            document.getElementById('userName').textContent = userData.name;
-            document.getElementById('userUsername').textContent = userData.username;
-            
-            // Update home screen
-            document.getElementById('homeWelcome').textContent = `Welcome ${userData.name}! 👋`;
-            document.getElementById('userReferralCode').textContent = userData.referralCode;
-            document.getElementById('referralLinkInput').value = userData.referralLink;
-            
-            // Show/hide referrer section based on data
-            const referrerSection = document.getElementById('referrerSection');
-            if (userData.hasReferrer && userData.referrerData) {
-                referrerSection.style.display = 'block';
-                
-                // Populate referrer data
-                document.getElementById('referrerName').textContent = userData.referrerData.name;
-                document.getElementById('referrerUsername').textContent = userData.referrerData.username;
-                document.getElementById('referrerAvatar').src = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face";
-                document.getElementById('referrerId').textContent = `ID: ${userData.referrerData.referralId}`;
-                document.getElementById('referralDate').textContent = userData.referrerData.referralDate;
-                document.getElementById('referralCode').textContent = userData.referrerData.referralCode;
-                document.getElementById('referrerUserId').textContent = userData.referrerData.userId;
-                
-                console.log('Referrer section populated successfully');
-            } else {
-                referrerSection.style.display = 'none';
-                console.log('Referrer section hidden - no referrer data');
-            }
-            
-            return userData;
+
+        // ডেমো ডেটা সেটআপ
+        function setupDemoData() {
+            document.getElementById('profilePic').src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2300f3ff;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23b967ff;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='40' r='20' fill='url(%23grad)'/%3E%3Ccircle cx='50' cy='100' r='30' fill='url(%23grad)'/%3E%3C/svg%3E";
+            document.getElementById('userName').textContent = 'আহসান হাবিব';
+            document.getElementById('userUsername').textContent = '@ahsan_xo';
         }
-        
+
+        // ৮ সেকেন্ড লোডিং সিকোয়েন্স
         function startLoadingSequence() {
-            const progressBar = document.getElementById('progressBar');
-            const userData = populateUserData();
+            const progressFill = document.getElementById('progressFill');
+            const percentage = document.getElementById('percentage');
+            const statusMessage = document.getElementById('statusMessage');
+            const statusSubtext = document.getElementById('statusSubtext');
+            const statWins = document.getElementById('statWins');
+            const statRate = document.getElementById('statRate');
+            const statRank = document.getElementById('statRank');
             
-            // Step 1: App Initialization
-            let step1Message = userData.hasReferrer ? 
-                "Checking referral information..." : 
-                "Initializing your account...";
-            updateLoadingStep(1, step1Message, "");
-            animateProgressBar(0, 25, 800);
+            const loadingSteps = [
+                { progress: 12, message: "Initializing Game", subtext: "Loading core modules", wins: 0, rate: "0%", rank: "#0" },
+                { progress: 25, message: "Loading Assets", subtext: "Loading game resources", wins: 25, rate: "25%", rank: "#45" },
+                { progress: 40, message: "Setting Up AI", subtext: "Preparing smart opponents", wins: 50, rate: "45%", rank: "#32" },
+                { progress: 55, message: "Network Setup", subtext: "Connecting multiplayer services", wins: 75, rate: "60%", rank: "#25" },
+                { progress: 70, message: "Profile Sync", subtext: "Synchronizing user data", wins: 100, rate: "72%", rank: "#18" },
+                { progress: 85, message: "Finalizing", subtext: "Optimizing performance", wins: 127, rate: "78%", rank: "#15" },
+                { progress: 95, message: "Almost Ready", subtext: "Final preparations", wins: 156, rate: "82%", rank: "#12" },
+                { progress: 100, message: "Ready to Play!", subtext: "Game loaded successfully", wins: 156, rate: "82%", rank: "#12" }
+            ];
             
-            setTimeout(() => {
-                // Step 2: Profile Setup
-                let step2Message = "Loading your profile...";
-                let step2SubMessage = `Welcome ${userData.name}`;
-                updateLoadingStep(2, step2Message, step2SubMessage);
-                animateProgressBar(25, 50, 800);
-                
-                setTimeout(() => {
-                    // Step 3: Data Verification
-                    let step3Message = userData.hasReferrer ? 
-                        "Verifying referrer data..." : 
-                        "Setting up your profile...";
-                    let step3SubMessage = userData.hasReferrer ? 
-                        `Referred by ${userData.referrerData.name}` : 
-                        "Direct registration";
-                    updateLoadingStep(3, step3Message, step3SubMessage);
-                    animateProgressBar(50, 75, 800);
+            let currentStep = 0;
+            const totalTime = 8000; // ৮ সেকেন্ড
+            const stepTime = totalTime / loadingSteps.length;
+            
+            function updateLoading() {
+                if (currentStep < loadingSteps.length) {
+                    const step = loadingSteps[currentStep];
                     
+                    progressFill.style.width = `${step.progress}%`;
+                    percentage.textContent = `${step.progress}%`;
+                    statusMessage.textContent = step.message;
+                    statusSubtext.textContent = step.subtext;
+                    
+                    // স্ট্যাটস আপডেট
+                    statWins.textContent = step.wins;
+                    statRate.textContent = step.rate;
+                    statRank.textContent = step.rank;
+                    
+                    currentStep++;
+                    setTimeout(updateLoading, stepTime);
+                } else {
+                    // লোডিং সম্পূর্ণ
                     setTimeout(() => {
-                        // Step 4: Complete
-                        let step4Message = "Finalizing setup...";
-                        let step4SubMessage = userData.hasReferrer ? 
-                            "Referral bonus activated!" : 
-                            "Almost ready...";
-                        updateLoadingStep(4, step4Message, step4SubMessage);
-                        animateProgressBar(75, 95, 800);
-                        
-                        setTimeout(() => {
-                            let finalMessage = userData.hasReferrer ? 
-                                "Referral account ready!" : 
-                                "Ready to earn!";
-                            updateLoadingSubMessage(finalMessage);
-                            animateProgressBar(95, 100, 400);
-                            
-                            setTimeout(() => {
-                                completeLoading();
-                            }, 500);
-                        }, 1000);
+                        console.log("XO Pro loaded successfully with Telegram user data!");
+                        // এখানে মূল গেম পেজে রিডাইরেক্ট করবেন
+                        // window.location.href = "game.html";
                     }, 1000);
-                }, 1000);
-            }, 1000);
-        }
-
-        function animateProgressBar(from, to, duration) {
-            const progressBar = document.getElementById('progressBar');
-            const startTime = performance.now();
-            
-            function updateProgress(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const currentWidth = from + (to - from) * progress;
-                
-                progressBar.style.width = currentWidth + '%';
-                
-                if (progress < 1) {
-                    requestAnimationFrame(updateProgress);
                 }
             }
             
-            requestAnimationFrame(updateProgress);
+            // শুরু করুন
+            setTimeout(updateLoading, 500);
         }
-        
-        function updateLoadingStep(step, message, subMessage) {
-            // Update current step
-            currentStep = step;
+
+        // DOM লোড হওয়ার পর
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTelegramUserData();
+            setTimeout(startLoadingSequence, 1000);
             
-            // Update all steps
-            for (let i = 1; i <= 4; i++) {
-                const stepElement = document.getElementById('step' + i);
-                if (i < step) {
-                    stepElement.classList.add('completed');
-                    stepElement.classList.remove('active');
-                } else if (i === step) {
-                    stepElement.classList.add('active');
-                    stepElement.classList.remove('completed');
-                } else {
-                    stepElement.classList.remove('active', 'completed');
-                }
+            // ভিউপোর্ট হাইট ইস্যু ফিক্স
+            function setViewportHeight() {
+                let vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
             }
             
-            // Update messages
-            document.getElementById('loadingMessage').textContent = message;
-            if (subMessage) {
-                updateLoadingSubMessage(subMessage);
-            }
-        }
-        
-        function updateLoadingSubMessage(message) {
-            document.getElementById('subMessage').textContent = message;
-        }
-        
-        function completeLoading() {
-            // Add completion animation
-            const loadingScreen = document.getElementById('loadingScreen');
-            
-            // Fade out loading screen
-            loadingScreen.style.opacity = '0';
-            loadingScreen.style.transition = 'opacity 0.5s ease';
-            
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-                // Show home page
-                document.getElementById('homePage').style.display = 'block';
-                
-                // Initialize home page functionality
-                initializeHomePage();
-            }, 500);
-        }
-        
-        function initializeHomePage() {
-            const userData = getUserDataFromTelegram();
-            
-            // Add click handlers for home page
-            setupHomeEventListeners(userData);
-        }
-
-        function setupHomeEventListeners(userData) {
-            // Copy referral code
-            const copyCodeBtn = document.getElementById('copyCodeBtn');
-            copyCodeBtn.addEventListener('click', function() {
-                navigator.clipboard.writeText(userData.referralCode).then(() => {
-                    showNotification('Referral code copied!');
-                    this.innerHTML = '<span class="material-icons" style="font-size: 16px; margin-right: 5px;">check</span>Copied!';
-                    setTimeout(() => {
-                        this.innerHTML = '<span class="material-icons" style="font-size: 16px; margin-right: 5px;">content_copy</span>Copy Code';
-                    }, 2000);
-                });
-            });
-
-            // Copy referral link
-            const copyLinkBtn = document.getElementById('copyLinkBtn');
-            copyLinkBtn.addEventListener('click', function() {
-                navigator.clipboard.writeText(userData.referralLink).then(() => {
-                    showNotification('Referral link copied!');
-                });
-            });
-
-            // Share referral link
-            const shareLinkBtn = document.getElementById('shareLinkBtn');
-            shareLinkBtn.addEventListener('click', function() {
-                if (navigator.share) {
-                    navigator.share({
-                        title: 'Join EarnMax and Start Earning!',
-                        text: `Use my referral code ${userData.referralCode} to get bonus!`,
-                        url: userData.referralLink
-                    });
-                } else {
-                    navigator.clipboard.writeText(userData.referralLink).then(() => {
-                        showNotification('Referral link copied! Share it with your friends.');
-                    });
-                }
-            });
-
-            // Task card click handlers
-            const taskCards = document.querySelectorAll('.task-card');
-            taskCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    const taskTitle = this.querySelector('h3').textContent;
-                    showNotification(`Starting: ${taskTitle}`);
-                });
-            });
-
-            // Balance buttons
-            const depositBtn = document.querySelector('.balance-actions .balance-btn:first-child');
-            const withdrawBtn = document.querySelector('.balance-actions .balance-btn:last-child');
-            
-            depositBtn.addEventListener('click', () => {
-                showNotification('Deposit feature coming soon!');
-            });
-            
-            withdrawBtn.addEventListener('click', () => {
-                showNotification('Withdrawal feature coming soon!');
-            });
-
-            // Navigation items
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    navItems.forEach(nav => nav.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    const label = this.querySelector('.nav-label').textContent;
-                    if (label !== 'Home') {
-                        showNotification(`${label} section coming soon!`);
-                    }
-                });
-            });
-
-            // See all tasks
-            const seeAllBtn = document.querySelector('.see-all');
-            seeAllBtn.addEventListener('click', () => {
-                showNotification('Showing all available tasks!');
-            });
-        }
-
-        function showNotification(message) {
-            // For Telegram Web App, you can use their native alerts
-            if (tg.showAlert) {
-                tg.showAlert(message);
-            } else {
-                alert(message);
-            }
-        }
-
-        // Handle errors gracefully
-        window.addEventListener('error', function(e) {
-            console.error('Loading error:', e);
-            updateLoadingSubMessage('Optimizing your experience...');
+            setViewportHeight();
+            window.addEventListener('resize', setViewportHeight);
+            window.addEventListener('orientationchange', setViewportHeight);
         });
     </script>
 </body>
